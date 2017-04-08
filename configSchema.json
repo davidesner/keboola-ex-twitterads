@@ -1,0 +1,137 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Twitter Ads extractor config",
+	"type": "object",
+	"properties": {
+		"#accessToken": {
+			"propertyOrder": 1000,
+			"title": "Access Token",
+			"type": "string",
+			"description": "oAuth Access Token"
+		},
+		"#consumerSecret": {
+			"propertyOrder": 2000,
+			"title": "Consumer secret",
+			"type": "string",
+			"description": "Consumer secret"
+		},
+		"#accessTokenSecret": {
+			"propertyOrder": 3000,
+			"title": "Access Token Secret",
+			"type": "string",
+			"description": "oAuth Access Token Secret"
+		},
+		"consumerKey": {
+			"propertyOrder": 4000,
+			"title": "Consumer Key",
+			"type": "string",
+			"description": "Consumer Key"
+		},
+		"accountId": {
+			"propertyOrder": 5000,
+			"title": "Account ID",
+			"type": "string",
+			"description": "Twitter account ID"
+		},
+		"since": {
+			"propertyOrder": 6000,
+			"title": "Changed since",
+			"description": "Loads data changed since. Date in format yyyy-mm-dd",
+			"type": "string"
+		},
+		"entityType": {
+			"propertyOrder": 7000,
+			"title": "Twitter Entity Type",
+			"description": "Entity type specifiing the granularity of performance data.",
+			"type": "string",
+			"enum": [
+				"CAMPAIGN",
+				"LINE_ITEM"
+			],
+			"default": "CAMPAIGN",
+			"options": {
+				"enum_titles": [
+					"Campaign",
+					"Line item"
+				]
+			}
+		},
+		"granularity": {
+			"propertyOrder": 8000,
+			"title": "Granularity",
+			"description": "Metric granularity.",
+			"type": "string",
+			"enum": [
+				"HOUR",
+				"DAY"
+			],
+			"default": "HOUR",
+			"options": {
+				"enum_titles": [
+					"Hour",
+					"Day"
+				]
+			}
+		},
+		"includeDeleted": {
+			"propertyOrder": 9000,
+			"title": "Include deleted entities",
+			"type": "boolean",
+			"description": "Retrieve deleted entities also",
+			"default": false
+		},
+		"entityDatasets": {
+			"propertyOrder": 10000,
+			"title": "Entity datasets to download",
+				"description": "Sepcifies entity datasets to be downloaded",
+			"type": "array",
+			"format": "checkbox",
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"propertyOrder": 2000,				
+				"enum": [
+					"CAMPAIGN",
+					"LINE_ITEM"
+				],
+				"default": "CAMPAIGN",
+				"options": {
+					"enum_titles": [
+						"Campaign",
+						"LineItem"
+					]
+				}
+			}
+		},
+		"incremental": {
+			"propertyOrder": 11000,
+			"title": "Storage upload mode",
+			"description": "Incremental upload will append data to existing tables. Full upload will replace the contents of target table.",
+			"type": "number",
+			"enum": [
+				0,
+				1
+			],
+			"default": 1,
+			"options": {
+				"enum_titles": [
+					"Full",
+					"Incremental"
+				]
+			}
+		}
+	},
+	"required": [
+		"#accessToken",
+		"#consumerSecret",
+		"#accessTokenSecret",
+		"consumerKey",
+		"accountId",
+		"since",
+		"entityType",
+		"granularity",
+		"includeDeleted",
+		"entityDatasets",
+		"incremental"
+	]
+}

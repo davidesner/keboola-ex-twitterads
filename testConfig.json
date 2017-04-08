@@ -1,0 +1,29 @@
+{
+    "storage": {
+        "input": {
+            "tables": [],
+            "files": []
+        },
+        "output": {
+            "tables": [],
+            "files": []
+        }
+    },
+    "parameters":{
+  "#accessToken": "123456",
+  "#consumerSecret": "sdvs",
+  "#accessTokenSecret": "sdvsdv",
+  "consumerKey": "sdvsdv",
+  "accountId": "vsdvsdv",
+  "since": "2016-09-01",
+  "entityType": "CAMPAIGN",
+  "granularity": "HOUR",
+  "includeDeleted": false,
+  "entityDatasets": [
+    "CAMPAIGN",
+    "LINE_ITEM"
+  ],
+  "incremental": 1
+},
+    "image_parameters": []
+}
