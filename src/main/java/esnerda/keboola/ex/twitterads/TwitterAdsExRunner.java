@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-
 import esnerda.keboola.components.KBCException;
 import esnerda.keboola.components.configuration.handler.ConfigHandlerBuilder;
 import esnerda.keboola.components.configuration.handler.KBCConfigurationEnvHandler;
@@ -33,13 +31,11 @@ import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequestBuilder;
 import esnerda.keboola.ex.twitterads.ws.request.AsyncAdsRequestChunk;
 import esnerda.keboola.ex.twitterads.ws.response.AdStatsResponseWrapper;
-import twitter4j.BaseAdsListResponse;
 import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
 import twitter4j.models.ads.TwitterEntity;
-import twitter4j.models.ads.TwitterEntityStatistics;
 import twitter4j.models.ads.TwitterEntityType;
 import twitter4j.models.ads.sort.CampaignSortByField;
 import twitter4j.models.ads.sort.LineItemsSortByField;
@@ -113,42 +109,35 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		}
 
 		
-		  List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(), config.getAccountId(), reqEntityIds, since.toInstant(), now);
-			
-	      
-		   List<JobDetails> finished = Collections.EMPTY_LIST;
-		   List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
-	       for (AsyncAdsRequestChunk chunk : chunks) {
-	    	   log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
-	    	  Map<String, AdsStatsAsyncRequest> jdIds =  apiService.submitAdStatsAsyncRequests(chunk.getRequestList());
-	    	  log.info("Waiting to procces first chunk of jobs..");
-	    	  //collect finished
-	    	   finished =  apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
-	    	   //get unfinished
-	    	   unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));	  	   
-	    	   if (isTimedOut()) {
-	    		   log.warning("Job processing timed out!", null);
-	    		   break;
-	    	   }
-	       }
-	
-	      log.info("Parsing results..");
-	     List<BaseAdsListResponse<TwitterEntityStatistics>> resultStats = Lists.newArrayList();
-	     for (JobDetails jd : finished) {
-	    	 resultStats.add(apiService.fetchJobDataAsync(jd));
-	     }
-         
-	     List<AdStatsWrapper> wr = new ArrayList<>();
-	     for (BaseAdsListResponse<TwitterEntityStatistics> stats : resultStats) {
-	    	 AdStatsResponseWrapper resp = new AdStatsResponseWrapper(stats);
-	    	 wr.addAll(AdsWrapperBuilder.buildFromResponse(resp));           
-     }
-	     
-	     allResults.addAll(performanceDataWriter.writeAndRetrieveResuts(wr));
-	     
-	     
-	     finalize(allResults, new TwAdsState(Date.from(now), unfinishedReqs));
-	     log.info("Extraction finished successfuly!");
+			List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
+					config.getAccountId(), reqEntityIds, since.toInstant(), now);
+
+			List<JobDetails> finished = Collections.EMPTY_LIST;
+			List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
+			for (AsyncAdsRequestChunk chunk : chunks) {
+				log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
+				Map<String, AdsStatsAsyncRequest> jdIds = apiService.submitAdStatsAsyncRequests(chunk.getRequestList());
+				log.info("Waiting to procces first chunk of jobs..");
+				// collect finished
+				finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
+				// get unfinished
+				unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));
+				if (isTimedOut()) {
+					log.warning("Job processing timed out!", null);
+					break;
+				}
+			}
+
+			log.info("Parsing results..");
+			for (JobDetails jd : finished) {
+				AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
+				performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
+			}
+
+			allResults.addAll(performanceDataWriter.closeAndRetrieveMetadata());
+
+			finalize(allResults, new TwAdsState(Date.from(now), unfinishedReqs));
+			log.info("Extraction finished successfuly!");
 		} catch (KBCException e) {
 			handleException(e);
 		} catch (TwitterException e) {
@@ -156,7 +145,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		} catch (Exception e) {
 			handleException(new KBCException(e.getMessage(), 2, e));
 		}
-		
+
 	}
 
 	private List<String> getEntIds(List cpgns) {
