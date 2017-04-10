@@ -114,10 +114,12 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 			List<JobDetails> finished = Collections.EMPTY_LIST;
 			List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
+			int cnt=0;
 			for (AsyncAdsRequestChunk chunk : chunks) {
+				cnt++;
 				log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
 				Map<String, AdsStatsAsyncRequest> jdIds = apiService.submitAdStatsAsyncRequests(chunk.getRequestList());
-				log.info("Waiting to procces first chunk of jobs..");
+				log.info("Waiting to proccess " + cnt +". chunk of jobs..");
 				// collect finished
 				finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
 				// get unfinished
