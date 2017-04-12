@@ -28,6 +28,7 @@ import twitter4j.api.TwitterAdsCampaignApi;
 import twitter4j.api.TwitterAdsLineItemApi;
 import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
@@ -45,9 +46,12 @@ public class TestAccounts {
 	        Instant until = Instant.now().truncatedTo(ChronoUnit.HOURS);
 	        
 	        TwitterAdsApiClient twClient = new TwitterAdsApiClient(new TwitterAdsWsConfig("ELWv5tfYrCbEz2izMF1x1tVRH", "hOxCTwiWXZyRc9Tec8KzgGdLsXr5WjP02xZOASdDJvUhJaP27p", "143820595-HUjJ2mzEtSbLPO38n0qGpQUwxnHF4Vqu2KG3zQwL", "Qrq6epi7KIi2oy1zDHAyue8KrOkmyJIJonNKlCmi5RsTI"));
+	        List<AdAccount> acc = twClient.getAccounts(true);
 	        TwitterAdsApiService tService = new TwitterAdsApiService(twClient);
+	        acc.get(0).getName();
 	        
 	       List<Campaign> cpgns = tService.getRecentlyUpdatedCampaigns("2dmkoj", false, Date.from(since));
+	       
 	       AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
 	       List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(TwitterEntityType.CAMPAIGN, "2dmkoj", getEntIds(cpgns), since, until);
 	       List<JobDetails> finished = Collections.EMPTY_LIST;

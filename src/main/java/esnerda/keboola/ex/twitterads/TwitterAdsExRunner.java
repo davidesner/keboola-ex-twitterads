@@ -32,6 +32,7 @@ import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequestBuilder;
 import esnerda.keboola.ex.twitterads.ws.request.AsyncAdsRequestChunk;
 import esnerda.keboola.ex.twitterads.ws.response.AdStatsResponseWrapper;
 import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
@@ -80,20 +81,30 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		List<LineItem> lineItems = Collections.EMPTY_LIST;
 		AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
 		List<ResultFileMetadata> allResults = new ArrayList<>();
-		
+
 		try {
+		List<AdAccount> accounts = apiService.getAccountsByNames(config.getAccountNames(), config.getIncludeDeleted());
+		if (accounts.size()< config.getAccountNames().size()) {
+			log.warning("Some accounts were not found! " + getMissingAccounts(accounts), null);
+		}
+
 		TwAdsState lastState = (TwAdsState) handler.getStateFile();
 
 		Instant now = Instant.now();
 		Date since = getSinceDate();
+
+		List<JobDetails> finished = Collections.EMPTY_LIST;
+		List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
 		//get entities
-		log.info("Retrieving Entities...");
+		for (AdAccount acc : accounts) {
+			String accountId = acc.getId();
+		log.info("Retrieving Entities for account '" + acc.getName() +"'...");
 		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
-			campaigns = apiService.getCampaigns(config.getAccountId(), config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
+			campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
 			allResults.addAll(campaignsWriter.writeAndRetrieveResuts(CampaignWrapper.Builder.build(campaigns)));
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
-			lineItems = apiService.getLineItems(config.getAccountId(), config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
+			lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
 			allResults.addAll(lineItemWriter.writeAndRetrieveResuts(LineItemWrapper.Builder.build(lineItems)));
 		}
 
@@ -110,10 +121,9 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 		
 			List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
-					config.getAccountId(), reqEntityIds, since.toInstant(), now);
+					accountId, reqEntityIds, since.toInstant(), now);
 
-			List<JobDetails> finished = Collections.EMPTY_LIST;
-			List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
+			
 			int cnt=0;
 			for (AsyncAdsRequestChunk chunk : chunks) {
 				cnt++;
@@ -130,11 +140,12 @@ public class TwitterAdsExRunner extends ComponentRunner{
 				}
 			}
 
-			log.info("Parsing results..");
+			log.info("Parsing results for account '" + acc.getName() +"'...");
 			for (JobDetails jd : finished) {
 				AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
 				performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
 			}
+		}
 
 			allResults.addAll(performanceDataWriter.closeAndRetrieveMetadata());
 
@@ -150,6 +161,10 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 	}
 
+	private String getMissingAccounts(List<AdAccount> accs) {
+		return String.join(";", accs.stream().filter(a -> config.getAccountNames().contains(a.getName())).map(a -> a.getName())
+				.collect(Collectors.toList()));
+	}
 	private List<String> getEntIds(List cpgns) {
 		return (List<String>) cpgns.stream().map(c -> ((TwitterEntity)c).getId()).collect(Collectors.toList());
 	}

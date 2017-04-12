@@ -9,11 +9,13 @@ import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
 import twitter4j.TwitterAds;
 import twitter4j.TwitterAdsFactory;
+import twitter4j.api.TwitterAdsAccountApi;
 import twitter4j.api.TwitterAdsCampaignApi;
 import twitter4j.api.TwitterAdsLineItemApi;
 import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
@@ -39,6 +41,15 @@ public class TwitterAdsApiClient {
 		this.clientInstance = new TwitterAdsFactory(configurationBuilder.build()).getAdsInstance();
 	}
 
+	public List<AdAccount> getAccounts(boolean withDeleted)
+			throws TwitterException {
+		TwitterAdsAccountApi accountApi = clientInstance.getAccountApi();
+		
+		BaseAdsListResponseIterable<AdAccount> allAccounts = accountApi.getAllAccounts(withDeleted, null);
+		
+		return transformListResponseToList(allAccounts);
+	}
+	
 	public List<Campaign> getCampaignsForAccount(String accountId, boolean withDeleted, CampaignSortByField sortBy)
 			throws TwitterException {
 		TwitterAdsCampaignApi campaignApi = clientInstance.getCampaignApi();

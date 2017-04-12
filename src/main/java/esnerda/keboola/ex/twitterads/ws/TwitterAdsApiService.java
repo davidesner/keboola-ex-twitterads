@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
 import twitter4j.BaseAdsListResponse;
 import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
@@ -43,6 +44,11 @@ public class TwitterAdsApiService {
 		return client.getLineItems(accountId, includeDeleted, sortBy);
 	}
 
+	public List<AdAccount> getAccountsByNames(List<String> accountNames, boolean includeDeleted) throws TwitterException {
+		return client.getAccounts(includeDeleted).stream().filter(a -> accountNames.contains(a.getName())).collect(Collectors.toList());
+		
+	}
+	
 	public List<Campaign> getRecentlyUpdatedCampaigns(String accountId, boolean includeDeleted, Date since) throws TwitterException {
 		return filterRecentlyUpdatedCampaigns(
 				getCampaigns(accountId, includeDeleted, CampaignSortByField.UPDATED_AT_DESC), since);

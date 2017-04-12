@@ -20,7 +20,7 @@ import twitter4j.models.ads.TwitterEntityType;
  * @author David Esner
  */
 public class TwAdsConfigParams extends IKBCParameters {
-	private final static String[] REQUIRED_FIELDS = { "consumerSecret", "accessToken", "accessTokenSecret", "consumerKey", "accountId", "since"};
+	private final static String[] REQUIRED_FIELDS = { "consumerSecret", "accessToken", "accessTokenSecret", "consumerKey", "accountNames", "since"};
 	private final Map<String, Object> parametersMap;
 
 	/* auth */
@@ -36,8 +36,8 @@ public class TwAdsConfigParams extends IKBCParameters {
 	@JsonProperty("consumerKey")
 	private String consumerKey;
 	
-	@JsonProperty("accountId")
-	private String accountId;
+	@JsonProperty("accountNames")
+	private List<String> accountNames;
 
 	@JsonProperty("since")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -63,7 +63,7 @@ public class TwAdsConfigParams extends IKBCParameters {
 			@JsonProperty("#accessToken") String accessToken,
 			@JsonProperty("#accessTokenSecret") String accessTokenSecret,
 			@JsonProperty("consumerKey") String consumerKey, 
-			@JsonProperty("accountId") String accountId,
+			@JsonProperty("accountNames") List<String> accountNames,
 			@JsonProperty("since") Date since, 
 			@JsonProperty("entityType") String entityType,
 			@JsonProperty("granularity") String granularity, 
@@ -75,7 +75,7 @@ public class TwAdsConfigParams extends IKBCParameters {
 		this.accessToken = accessToken;
 		this.accessTokenSecret = accessTokenSecret;
 		this.consumerKey = consumerKey;
-		this.accountId = accountId;
+		this.accountNames = accountNames;
 		this.since = since;
 		this.entityType = Optional.ofNullable(entityType).orElse(TwitterEntityType.CAMPAIGN.name());
 		this.granularity = Optional.ofNullable(granularity).orElse(Granularity.HOUR.name());
@@ -89,7 +89,7 @@ public class TwAdsConfigParams extends IKBCParameters {
 		parametersMap.put("accessToken", accessToken);
 		parametersMap.put("accessTokenSecret", accessTokenSecret);
 		parametersMap.put("consumerKey", consumerKey);
-		parametersMap.put("accountId", accountId);
+		parametersMap.put("accountNames", accountNames);
 		parametersMap.put("since", since);
 		parametersMap.put("entityType", entityType);
 	}
@@ -110,8 +110,8 @@ public class TwAdsConfigParams extends IKBCParameters {
 		return consumerKey;
 	}
 
-	public String getAccountId() {
-		return accountId;
+	public List<String> getAccountNames() {
+		return accountNames;
 	}
 
 	public Date getSince() {

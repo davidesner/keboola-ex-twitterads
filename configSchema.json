@@ -27,11 +27,17 @@
 			"type": "string",
 			"description": "Consumer Key"
 		},
-		"accountId": {
-			"propertyOrder": 5000,
-			"title": "Account ID",
-			"type": "string",
-			"description": "Twitter account ID"
+		"accountNames": {
+		"propertyOrder": 5000,
+			"type": "array",
+			"title": "Twitter account names",
+			"uniqueItems": true,
+			"format": "table",
+			"description": "Twitter account names as found in Twitter UI",
+			"items": {				
+				"title": "Account name",
+				"type": "string"
+			}
 		},
 		"since": {
 			"propertyOrder": 6000,
@@ -83,13 +89,13 @@
 		"entityDatasets": {
 			"propertyOrder": 10000,
 			"title": "Entity datasets to download",
-				"description": "Sepcifies entity datasets to be downloaded",
+			"description": "Sepcifies entity datasets to be downloaded",
 			"type": "array",
 			"format": "checkbox",
 			"uniqueItems": true,
 			"items": {
 				"type": "string",
-				"propertyOrder": 2000,				
+				"propertyOrder": 2000,
 				"enum": [
 					"CAMPAIGN",
 					"LINE_ITEM"
@@ -126,7 +132,7 @@
 		"#consumerSecret",
 		"#accessTokenSecret",
 		"consumerKey",
-		"accountId",
+		"accountNames",
 		"since",
 		"entityType",
 		"granularity",
