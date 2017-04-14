@@ -77,7 +77,7 @@ public class AdsStatsAsyncRequestBuilder {
 		}		
 
 		private long getNumberOfChunks() {
-			return ChronoUnit.DAYS.between(startTime, endTime)/MAX_DAY_INTERVAL;
+			return (int) Math.ceil((double) ChronoUnit.DAYS.between(startTime, endTime) / (double) MAX_DAY_INTERVAL);
 		}
 
 		@Override
