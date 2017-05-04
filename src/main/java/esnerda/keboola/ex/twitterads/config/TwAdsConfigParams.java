@@ -57,6 +57,9 @@ public class TwAdsConfigParams extends IKBCParameters {
 
 	@JsonProperty("incremental")
 	private Boolean incremental;
+
+	@JsonProperty("sinceLast")
+	private Boolean sinceLast;
 	
 	@JsonCreator	
 	public TwAdsConfigParams(@JsonProperty("#consumerSecret") String consumerSecret,
@@ -69,7 +72,8 @@ public class TwAdsConfigParams extends IKBCParameters {
 			@JsonProperty("granularity") String granularity, 
 			@JsonProperty("incremental") Boolean incremental,
 			@JsonProperty("includeDeleted") Boolean includeDeleted,
-			@JsonProperty("entityDatasets") List<String> entityDatasets) {
+			@JsonProperty("entityDatasets") List<String> entityDatasets,
+			@JsonProperty("sinceLast") Boolean sinceLast) {
 		super();
 		this.consumerSecret = consumerSecret;
 		this.accessToken = accessToken;
@@ -82,6 +86,7 @@ public class TwAdsConfigParams extends IKBCParameters {
 		this.incremental = Optional.ofNullable(incremental).orElse(true);
 		this.includeDeleted = Optional.ofNullable(includeDeleted).orElse(false);
 		this.entityDatasets = Optional.ofNullable(entityDatasets).orElse(Collections.EMPTY_LIST);
+		this.sinceLast = Optional.ofNullable(sinceLast).orElse(true);
 
 		// set param map
 		parametersMap = new HashMap<>();
@@ -160,6 +165,14 @@ public class TwAdsConfigParams extends IKBCParameters {
 
 	public Boolean getIncremental() {
 		return incremental;
+	}	
+
+	public Boolean getSinceLast() {
+		return sinceLast;
+	}
+
+	public void setSinceLast(Boolean sinceLast) {
+		this.sinceLast = sinceLast;
 	}
 
 	@Override

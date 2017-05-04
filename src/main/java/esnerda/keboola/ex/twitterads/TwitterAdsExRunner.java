@@ -171,7 +171,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 	private Date getSinceDate() throws KBCException {
 		TwAdsState lastState = (TwAdsState) handler.getStateFile();		
-		if (lastState == null || lastState.getLastRun() == null) {
+		if (!config.getSinceLast() || lastState == null || lastState.getLastRun() == null) {
 			return config.getSince();
 		} else {
 			return lastState.getLastRun();
