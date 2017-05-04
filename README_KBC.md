@@ -49,12 +49,12 @@ and [metrics-by-objective](https://dev.twitter.com/ads/analytics/metrics-by-obje
 - **Access Token Secret **–	(REQ)  TwitterAds API access token secret. 
 - **Consumer Key – **(REQ)TwitterAds Consumer Key 
 - **Twitter Account Names** – List of account names related to the Twitter Ads API credentials. Account names can be found in the Twitter UI. Note that account names must be specified **exactly** as in the UI.  
-- **Changed since* ** – (REQ) starting date from where the data will be retrieved in format `yyyy-mm-dd` Affects both `Entity` and `Performance Data` datasets. Only records that changed since this	specified date will be retrieved. For more information see the	footnote. 
-- **Granularity – ** Specify	granularity of the performance data. Hourly and Daily granularity is supported. 
+- **Changed since** – (REQ) starting date from where the data will be retrieved in format `yyyy-mm-dd` Affects both `Entity` and `Performance Data` datasets. Only records that changed since this specified date will be retrieved. For more information see the	footnote. 
+- **Granularity –** Specify	granularity of the performance data. Hourly and Daily granularity is supported. 
 - **Include deleted entities –** specifies whether data for deleted entities will be included. 
 - **Entity datasets to download – ** List the entity datasets to	download. 
 - **Storage upload mode** – (DEFAULT _INCREMENTAL_) specifies whether to upload incrementally. If set to _INCREMENTAL_,	the primary keys must be specified. 
-- **Data since last run* –** determines whether the component should retrieve only data changed since the last run on	each consecutive run. 
+- **Data since last run –** determines whether the component should retrieve only data changed since the last run on	each consecutive run. 
 
-***NOTE: ** Because the `Change since` parameter affects both the `Entity` and the `Performance` data it is recommended to set the parameter as far in past as possible. This way it is ensured to retrieve all Entities required, although the first run might take a bit longer. When `Data since last run` parameter is set to true, each
+**\*NOTE:** Because the `Change since` parameter affects both the `Entity` and the `Performance` data it is recommended to set the parameter as far in past as possible. This way it is ensured to retrieve all Entities required, although the first run might take a bit longer. When `Data since last run` parameter is set to true, each
 consequent run retrieves only records that have changed from the previous run. That means that each consequent run the `Changed since` parameter is ignored. To override this behaviour, set `Data since last run` to false.
