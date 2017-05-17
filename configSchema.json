@@ -3,30 +3,6 @@
 	"title": "Twitter Ads extractor config",
 	"type": "object",
 	"properties": {
-		"#accessToken": {
-			"propertyOrder": 1000,
-			"title": "Access Token",
-			"type": "string",
-			"description": "oAuth Access Token"
-		},
-		"#consumerSecret": {
-			"propertyOrder": 2000,
-			"title": "Consumer secret",
-			"type": "string",
-			"description": "Consumer secret"
-		},
-		"#accessTokenSecret": {
-			"propertyOrder": 3000,
-			"title": "Access Token Secret",
-			"type": "string",
-			"description": "oAuth Access Token Secret"
-		},
-		"consumerKey": {
-			"propertyOrder": 4000,
-			"title": "Consumer Key",
-			"type": "string",
-			"description": "Consumer Key"
-		},
 		"accountNames": {
 		"propertyOrder": 5000,
 			"type": "array",
@@ -144,11 +120,7 @@
 			}
 		}
 	},
-	"required": [
-		"#accessToken",
-		"#consumerSecret",
-		"#accessTokenSecret",
-		"consumerKey",
+	"required": [	
 		"accountNames",
 		"since",
 		"entityType",
