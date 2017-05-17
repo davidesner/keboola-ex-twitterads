@@ -14,6 +14,7 @@ import esnerda.keboola.components.configuration.ConfigFormat;
 import esnerda.keboola.components.configuration.IKBCParameters;
 import esnerda.keboola.components.configuration.KBCConfig;
 import esnerda.keboola.components.configuration.KBCOutputMapping;
+import esnerda.keboola.components.configuration.OAuthCredentials;
 import esnerda.keboola.components.configuration.parser.ConfigParser;
 import esnerda.keboola.components.configuration.tableconfig.ManifestFile;
 import esnerda.keboola.components.configuration.tableconfig.ManifestParser;
@@ -213,5 +214,10 @@ class KBCConfigurationHandlerImpl implements KBCConfigurationEnvHandler {
             throw new KBCException("Error writing state file.", ex.getMessage(), ex);
         }
     }
+
+	@Override
+	public OAuthCredentials getOAuthCredentials() {
+		return this.config.getOAuthCredentials();
+	}
 
 }

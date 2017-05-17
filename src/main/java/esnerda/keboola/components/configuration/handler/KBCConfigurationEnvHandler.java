@@ -8,6 +8,7 @@ import java.util.List;
 import esnerda.keboola.components.KBCException;
 import esnerda.keboola.components.appstate.LastState;
 import esnerda.keboola.components.configuration.IKBCParameters;
+import esnerda.keboola.components.configuration.OAuthCredentials;
 import esnerda.keboola.components.configuration.tableconfig.ManifestFile;
 import esnerda.keboola.components.configuration.tableconfig.StorageTable;
 
@@ -43,4 +44,6 @@ public interface KBCConfigurationEnvHandler {
     public String getInPath();
 
     public String getOutPath();
+
+    public OAuthCredentials getOAuthCredentials();
 }

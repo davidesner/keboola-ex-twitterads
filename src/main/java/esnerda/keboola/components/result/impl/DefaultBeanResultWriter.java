@@ -20,7 +20,7 @@ public class DefaultBeanResultWriter<T> extends AbstractBeanResultWriter<T> {
 	@Override
 	public List<ResultFileMetadata> closeAndRetrieveMetadata() throws Exception {
 		close();
-		return Collections.singletonList(new ResultFileMetadata(resFile, idCols));
+		return Collections.singletonList(new ResultFileMetadata(resFile, idCols, null));
 	}
 
 	@Override

@@ -2,11 +2,10 @@
  */
 package esnerda.keboola.components.configuration;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,14 +20,17 @@ public class KBCConfig {
     private KBCStorage storage;
     @JsonProperty("parameters")
     private IKBCParameters params;
+    @JsonProperty("authorization")
+    private KBCAuthorization auth;
 
     public KBCConfig() {
         validationError = null;
     }
 
-    public KBCConfig(KBCStorage storage, IKBCParameters params) {
+    public KBCConfig(KBCStorage storage, IKBCParameters params, KBCAuthorization auth) {
         this.storage = storage;
         this.params = params;
+        this.auth = auth;
     }
 
     public boolean validate() {
@@ -75,5 +77,13 @@ public class KBCConfig {
 
     public List<KBCOutputMapping> getOutputTables() {
         return this.storage.getOutputTables().getTables();
+    }
+
+    public OAuthCredentials getOAuthCredentials() {
+        return this.auth.getoAuthApi().credentials;
+    }
+
+    public void setAuth(KBCAuthorization auth) {
+        this.auth = auth;
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import esnerda.keboola.components.KBCException;
+import esnerda.keboola.components.configuration.OAuthCredentials;
 import esnerda.keboola.components.configuration.handler.ConfigHandlerBuilder;
 import esnerda.keboola.components.configuration.handler.KBCConfigurationEnvHandler;
 import esnerda.keboola.components.configuration.tableconfig.ManifestFile;
@@ -20,6 +21,8 @@ import esnerda.keboola.components.result.impl.DefaultBeanResultWriter;
 import esnerda.keboola.ex.twitterads.config.TwAdsConfigParams;
 import esnerda.keboola.ex.twitterads.config.TwAdsConfigParams.EntityDatasets;
 import esnerda.keboola.ex.twitterads.config.TwAdsState;
+import esnerda.keboola.ex.twitterads.config.TwitterAuthResponseParser;
+import esnerda.keboola.ex.twitterads.config.TwitterAuthTokens;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdStatsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdsWrapperBuilder;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
@@ -53,7 +56,6 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	private TwAdsConfigParams config;
 	private TwitterAdsApiService apiService;
 	private KBCLogger log;
-
 	/* writers */
 	private static IResultWriter<AdStatsWrapper> performanceDataWriter;
 	private static IResultWriter<CampaignWrapper> campaignsWriter;
@@ -64,11 +66,13 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		handler = initHandler(args, log);
 		config = (TwAdsConfigParams) handler.getParameters();		
 		try {
-			 TwitterAdsApiClient twClient = new TwitterAdsApiClient(new TwitterAdsWsConfig(config.getConsumerKey(),
-					 config.getConsumerSecret(), config.getAccessToken(), config.getAccessTokenSecret()));
+			OAuthCredentials creds = handler.getOAuthCredentials();
+			TwitterAuthTokens tokens = TwitterAuthResponseParser.parseOAuthData(creds.getData());
+			 TwitterAdsApiClient twClient = new TwitterAdsApiClient(new TwitterAdsWsConfig(creds.getAppKey(),
+					 creds.getAppSecret(), tokens.getoAuthToken(), tokens.getoAuthTokenSecret()));
 			apiService = new TwitterAdsApiService(twClient);
 			initWriters();
-			
+		
 		} catch (Exception e) {
 			handleException(new KBCException("Failed to init web service!", e.getMessage(), e, 2));
 		}
