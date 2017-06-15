@@ -18,7 +18,7 @@ public class AdsStatsAsyncRequestBuilder {
 
 	private static final int MAX_DAY_INTERVAL = 90;
 	private static final int MAX_ENTITY_COUNT = 20;
-	private static final int MAX_CHUNK_REQ_COUNT = 1000;
+	private static final int MAX_CHUNK_REQ_COUNT = 100;
 
 	public List<AsyncAdsRequestChunk> buildAdRequestsChunks(TwitterEntityType type, String accountId, List<String> entityIds, Instant startTime, Instant endTime) {
 		List<AdsStatsAsyncRequest> requests = new ArrayList<>();
