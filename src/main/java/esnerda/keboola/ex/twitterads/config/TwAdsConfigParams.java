@@ -20,7 +20,7 @@ import twitter4j.models.ads.TwitterEntityType;
  * @author David Esner
  */
 public class TwAdsConfigParams extends IKBCParameters {
-	private final static String[] REQUIRED_FIELDS = { "consumerSecret", "accessToken", "accessTokenSecret", "consumerKey", "accountNames", "since"};
+	private final static String[] REQUIRED_FIELDS = {"accountNames", "since"};
 	private final Map<String, Object> parametersMap;
 
 	/* auth */
@@ -89,11 +89,7 @@ public class TwAdsConfigParams extends IKBCParameters {
 		this.sinceLast = Optional.ofNullable(sinceLast).orElse(true);
 
 		// set param map
-		parametersMap = new HashMap<>();
-		parametersMap.put("consumerSecret", consumerSecret);
-		parametersMap.put("accessToken", accessToken);
-		parametersMap.put("accessTokenSecret", accessTokenSecret);
-		parametersMap.put("consumerKey", consumerKey);
+		parametersMap = new HashMap<>();		
 		parametersMap.put("accountNames", accountNames);
 		parametersMap.put("since", since);
 		parametersMap.put("entityType", entityType);
