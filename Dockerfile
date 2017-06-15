@@ -25,8 +25,8 @@ ENV APP_VERSION 1.1.0
 RUN apk add --no-cache git
 
 # set switch that enables correct JVM memory allocation in containers
-RUN export JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-RUN export MAVEN_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+ENV MAVEN_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
 
  WORKDIR /home
 RUN git clone https://github.com/davidesner/keboola-ex-twitterads.git ./  

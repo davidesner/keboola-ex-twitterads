@@ -216,11 +216,11 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		this.performanceDataWriter = new DefaultBeanResultWriter<>(
 				config.getEntityType().toLowerCase() + "PerformanceData.csv", new String[] { "entityId", "timeStamp" });
 		performanceDataWriter.initWriter(handler.getOutputTablesPath(), AdStatsWrapper.class);
-		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name())) {
+		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
 			this.campaignsWriter = new DefaultBeanResultWriter<>("campaigns.csv", new String[] { "id" });
 			this.campaignsWriter.initWriter(handler.getOutputTablesPath(), CampaignWrapper.class);
 		}
-		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name())) {
+		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
 			this.lineItemWriter = new DefaultBeanResultWriter<>("lineItem.csv", new String[] { "id" });
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
 		}
