@@ -67,8 +67,8 @@ public class AdsStatsAsyncRequestBuilder {
 
 		public TimeWindowIterator(Instant startTime, Instant endTime) {
 			super();
-			this.startTime = startTime;
-			this.endTime = endTime;
+			this.startTime = startTime.truncatedTo(ChronoUnit.HOURS);
+			this.endTime = endTime.truncatedTo(ChronoUnit.HOURS);
 			this.totalChunks = getNumberOfChunks();
 		}
 
