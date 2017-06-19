@@ -194,7 +194,8 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	}
 
 	private String getMissingAccounts(List<AdAccount> accs) {
-		return String.join(";", accs.stream().filter(a -> config.getAccountNames().contains(a.getName())).map(a -> a.getName())
+		List<String> accNames = accs.parallelStream().map(a -> a.getName()).collect(Collectors.toList());
+		return String.join(";", config.getAccountNames().stream().filter(a -> !accNames.contains(a)).map(a -> a)
 				.collect(Collectors.toList()));
 	}
 	private List<String> getEntIds(List cpgns) {
