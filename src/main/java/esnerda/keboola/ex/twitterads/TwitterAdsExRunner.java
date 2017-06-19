@@ -1,7 +1,9 @@
 package esnerda.keboola.ex.twitterads;
 
+import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +29,7 @@ import esnerda.keboola.ex.twitterads.result.wrapper.AdStatsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdsWrapperBuilder;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.LineItemWrapper;
+import esnerda.keboola.ex.twitterads.util.CsvUtil;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiClient;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiService;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsWsConfig;
@@ -70,8 +73,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			TwitterAuthTokens tokens = TwitterAuthResponseParser.parseOAuthData(creds.getData());
 			 TwitterAdsApiClient twClient = new TwitterAdsApiClient(new TwitterAdsWsConfig(creds.getAppKey(),
 					 creds.getAppSecret(), tokens.getoAuthToken(), tokens.getoAuthTokenSecret()));
-			apiService = new TwitterAdsApiService(twClient);
-			initWriters();
+			apiService = new TwitterAdsApiService(twClient);			
 		
 		} catch (Exception e) {
 			handleException(new KBCException("Failed to init web service!", e.getMessage(), e, 2));
@@ -99,6 +101,14 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 		List<JobDetails> finished = Collections.EMPTY_LIST;
 		List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
+		
+		if(accounts.isEmpty()) {
+			log.warning("No such accounts found!", null);
+			System.exit(0);
+		}
+
+		// init writers
+		initWriters();
 		//get entities
 		for (AdAccount acc : accounts) {
 			String accountId = acc.getId();
@@ -149,11 +159,12 @@ public class TwitterAdsExRunner extends ComponentRunner{
 				AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
 				performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
 			}
-		}
-
 			allResults.addAll(performanceDataWriter.closeAndRetrieveMetadata());
-
+		}
+			//just in case
+			closeWriters();
 			finalize(allResults, new TwAdsState(Date.from(now), unfinishedReqs));
+			deleteEmptyFiles();
 			log.info("Extraction finished successfuly!");
 		} catch (KBCException e) {
 			handleException(e);
@@ -163,6 +174,31 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			handleException(new KBCException(e.getMessage(), 2, e));
 		}
 
+	}
+
+
+	private void closeWriters() {
+		try {
+			if (campaignsWriter != null) {
+				campaignsWriter.closeAndRetrieveMetadata();
+			}
+			if (lineItemWriter != null) {
+				lineItemWriter.closeAndRetrieveMetadata();
+			}
+			if (performanceDataWriter != null) {
+				performanceDataWriter.closeAndRetrieveMetadata();
+			}
+		} catch (Exception e) {
+			//n
+		}		
+	}
+
+	private void deleteEmptyFiles() {
+		File[] files = new File(handler.getOutputTablesPath()).listFiles(f -> {
+			String name = f.getName();
+			return name.substring(name.length() - 4, name.length()).equals(".csv");
+		});
+		CsvUtil.deleteEmptyFiles(Arrays.asList(files));
 	}
 
 	private String getMissingAccounts(List<AdAccount> accs) {
