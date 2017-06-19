@@ -83,10 +83,9 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	@Override
 	protected void run() {
 		startTimer();
-		List<Campaign> campaigns = Collections.EMPTY_LIST;
-		List<LineItem> lineItems = Collections.EMPTY_LIST;
+		List<Campaign> campaigns = Collections.emptyList();
+		List<LineItem> lineItems = Collections.emptyList();
 		AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
-		List<ResultFileMetadata> allResults = new ArrayList<>();
 
 		try {
 		List<AdAccount> accounts = apiService.getAccountsByNames(config.getAccountNames(), config.getIncludeDeleted());
@@ -94,12 +93,10 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			log.warning("Some accounts were not found! " + getMissingAccounts(accounts), null);
 		}
 
-		TwAdsState lastState = (TwAdsState) handler.getStateFile();
-
 		Instant now = Instant.now();
 		Date since = getSinceDate();
 
-		List<JobDetails> finished = Collections.EMPTY_LIST;
+		List<JobDetails> finished = Collections.emptyList();
 		List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
 		
 		if(accounts.isEmpty()) {
@@ -115,15 +112,15 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		log.info("Retrieving Entities for account '" + acc.getName() +"'...");
 		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
 			campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
-			allResults.addAll(campaignsWriter.writeAndRetrieveResuts(CampaignWrapper.Builder.build(campaigns)));
+			campaignsWriter.writeAllResults(CampaignWrapper.Builder.build(campaigns));
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
 			lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
-			allResults.addAll(lineItemWriter.writeAndRetrieveResuts(LineItemWrapper.Builder.build(lineItems)));
+			lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems));
 		}
 
 		//retrieve data only for recently updated
-		List<String> reqEntityIds = Collections.EMPTY_LIST;
+		List<String> reqEntityIds = Collections.emptyList();
 		switch (config.getEntityTypeEnum()) {
 		case CAMPAIGN:
 			reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedCampaigns(campaigns, since));	
@@ -132,12 +129,9 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedLineItems(lineItems,since));
 			break;
 		}
-
-		
 			List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
 					accountId, reqEntityIds, since.toInstant(), now);
 
-			
 			int cnt=0;
 			for (AsyncAdsRequestChunk chunk : chunks) {
 				cnt++;
@@ -158,12 +152,10 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			for (JobDetails jd : finished) {
 				AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
 				performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
-			}
-			allResults.addAll(performanceDataWriter.closeAndRetrieveMetadata());
-		}
-			//just in case
-			closeWriters();
-			finalize(allResults, new TwAdsState(Date.from(now), unfinishedReqs));
+			}			
+		}		
+
+			finalize(closeWritersAndRetrieveResults(), new TwAdsState(Date.from(now), unfinishedReqs));
 			deleteEmptyFiles();
 			log.info("Extraction finished successfuly!");
 		} catch (KBCException e) {
@@ -177,20 +169,20 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	}
 
 
-	private void closeWriters() {
-		try {
-			if (campaignsWriter != null) {
-				campaignsWriter.closeAndRetrieveMetadata();
-			}
-			if (lineItemWriter != null) {
-				lineItemWriter.closeAndRetrieveMetadata();
-			}
-			if (performanceDataWriter != null) {
-				performanceDataWriter.closeAndRetrieveMetadata();
-			}
-		} catch (Exception e) {
-			//n
-		}		
+	private List<ResultFileMetadata> closeWritersAndRetrieveResults() throws Exception {
+		List<ResultFileMetadata> allResults = new ArrayList<>();
+
+		if (campaignsWriter != null) {
+			allResults.addAll(campaignsWriter.closeAndRetrieveMetadata());
+		}
+		if (lineItemWriter != null) {
+			allResults.addAll(lineItemWriter.closeAndRetrieveMetadata());
+		}
+		if (performanceDataWriter != null) {
+			allResults.addAll(performanceDataWriter.closeAndRetrieveMetadata());
+		}
+
+		return allResults;
 	}
 
 	private void deleteEmptyFiles() {
