@@ -12,6 +12,7 @@ import twitter4j.TwitterAdsFactory;
 import twitter4j.api.TwitterAdsAccountApi;
 import twitter4j.api.TwitterAdsCampaignApi;
 import twitter4j.api.TwitterAdsLineItemApi;
+import twitter4j.api.TwitterAdsPromotedTweetApi;
 import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.internal.models4j.TwitterException;
@@ -19,9 +20,11 @@ import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
+import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.TwitterEntityStatistics;
 import twitter4j.models.ads.sort.CampaignSortByField;
 import twitter4j.models.ads.sort.LineItemsSortByField;
+import twitter4j.models.ads.sort.PromotedTweetsSortByField;
 
 /**
  * @author David Esner
@@ -67,6 +70,14 @@ public class TwitterAdsApiClient {
 				com.google.common.base.Optional.fromNullable(sortBy));
 
 		return transformListResponseToList(allLineItems);
+	}
+	
+	public List<PromotedTweets> getPromotedTweets(String accountId, boolean withDeleted, PromotedTweetsSortByField sortBy)
+			throws TwitterException {
+		TwitterAdsPromotedTweetApi promotedTwApi = clientInstance.getPromotedTweetApi();
+		BaseAdsListResponseIterable<PromotedTweets> promotedTweets = promotedTwApi.getAllPromotedTweets(accountId, null, withDeleted, null, null, com.google.common.base.Optional.fromNullable(sortBy));
+
+		return transformListResponseToList(promotedTweets);
 	}
 
 	public JobDetails submitAsyncStatsRequest(AdsStatsAsyncRequest req) throws TwitterException {

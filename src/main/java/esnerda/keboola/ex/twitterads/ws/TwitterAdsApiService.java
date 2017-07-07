@@ -14,10 +14,12 @@ import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
+import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.TwitterAsyncQueryStatus;
 import twitter4j.models.ads.TwitterEntityStatistics;
 import twitter4j.models.ads.sort.CampaignSortByField;
 import twitter4j.models.ads.sort.LineItemsSortByField;
+import twitter4j.models.ads.sort.PromotedTweetsSortByField;
 import twitter4j.util.TwitterAdUtil;
 
 /**
@@ -44,8 +46,17 @@ public class TwitterAdsApiService {
 		return client.getLineItems(accountId, includeDeleted, sortBy);
 	}
 
+	public List<PromotedTweets> getPromotedTweets(String accountId, boolean includeDeleted, PromotedTweetsSortByField sortBy) throws TwitterException {
+		return client.getPromotedTweets(accountId, includeDeleted, sortBy);
+	}
+
 	public List<AdAccount> getAccountsByNames(List<String> accountNames, boolean includeDeleted) throws TwitterException {
 		return client.getAccounts(includeDeleted).stream().filter(a -> accountNames.contains(a.getName())).collect(Collectors.toList());
+		
+	}
+
+	public List<AdAccount> getAllAccounts(boolean includeDeleted) throws TwitterException {
+		return client.getAccounts(includeDeleted);
 		
 	}
 	

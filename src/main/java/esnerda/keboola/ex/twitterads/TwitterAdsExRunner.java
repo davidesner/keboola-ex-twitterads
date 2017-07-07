@@ -42,10 +42,12 @@ import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
+import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.TwitterEntity;
 import twitter4j.models.ads.TwitterEntityType;
 import twitter4j.models.ads.sort.CampaignSortByField;
 import twitter4j.models.ads.sort.LineItemsSortByField;
+import twitter4j.models.ads.sort.PromotedTweetsSortByField;
 
 
 /**
@@ -63,6 +65,9 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	private static IResultWriter<AdStatsWrapper> performanceDataWriter;
 	private static IResultWriter<CampaignWrapper> campaignsWriter;
 	private static IResultWriter<LineItemWrapper> lineItemWriter;
+	/* Entity writers */
+	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
+	private static IResultWriter<AdAccount> accountWriter;
 
 	public TwitterAdsExRunner (String[] args) {
 		log = new DefaultLogger(TwitterAdsExRunner.class);
@@ -118,6 +123,11 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
 			lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems));
 		}
+		if(config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
+			accountWriter.writeAllResults(apiService.getAllAccounts(config.getIncludeDeleted()));
+		}
+		/* Get implicit entities */
+		promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId, config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
 
 		//retrieve data only for recently updated
 		List<String> reqEntityIds = Collections.emptyList();
@@ -180,6 +190,12 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		}
 		if (performanceDataWriter != null) {
 			allResults.addAll(performanceDataWriter.closeAndRetrieveMetadata());
+		}
+		if (promotedTweetsWriter != null) {
+			allResults.addAll(promotedTweetsWriter.closeAndRetrieveMetadata());
+		}
+		if (accountWriter != null) {
+			allResults.addAll(accountWriter.closeAndRetrieveMetadata());
 		}
 
 		return allResults;
@@ -253,6 +269,13 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			this.lineItemWriter = new DefaultBeanResultWriter<>("lineItem.csv", new String[] { "id" });
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
 		}
+		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
+			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", new String[] { "id" });
+			accountWriter.initWriter(handler.getOutputTablesPath(), AdAccount.class);
+		}
+		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv", new String[] { "tweetId" });
+		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
+		
 	}
 
 	@Override
