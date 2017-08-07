@@ -20,7 +20,7 @@ import twitter4j.models.ads.TwitterEntityType;
  * @author David Esner
  */
 public class TwAdsConfigParams extends IKBCParameters {
-	private final static String[] REQUIRED_FIELDS = {"accountNames", "since"};
+	private final static String[] REQUIRED_FIELDS = {"since"};
 	private final Map<String, Object> parametersMap;
 
 	/* auth */
@@ -90,7 +90,6 @@ public class TwAdsConfigParams extends IKBCParameters {
 
 		// set param map
 		parametersMap = new HashMap<>();		
-		parametersMap.put("accountNames", accountNames);
 		parametersMap.put("since", since);
 		parametersMap.put("entityType", entityType);
 	}

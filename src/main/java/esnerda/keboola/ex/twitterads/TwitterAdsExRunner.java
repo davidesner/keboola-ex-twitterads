@@ -93,9 +93,10 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
 
 		try {
-		List<AdAccount> accounts = apiService.getAccountsByNames(config.getAccountNames(), config.getIncludeDeleted());
-		if (accounts.size()< config.getAccountNames().size()) {
-			log.warning("Some accounts were not found! " + getMissingAccounts(accounts), null);
+		List<AdAccount> accounts = getAccounts(config);
+		
+		if (config.getAccountNames() != null && accounts.size()< config.getAccountNames().size()) {
+			System.err.println("Some accounts were not found! " + getMissingAccounts(accounts));
 		}
 
 		Instant now = Instant.now();
@@ -105,7 +106,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
 		
 		if(accounts.isEmpty()) {
-			log.warning("No such accounts found!", null);
+			System.err.println("No such accounts found!");
 			System.exit(0);
 		}
 
@@ -153,7 +154,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 				// get unfinished
 				unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));
 				if (isTimedOut()) {
-					log.warning("Job processing timed out!", null);
+					System.err.println("Job processing timed out!");
 					break;
 				}
 			}
@@ -178,6 +179,13 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 	}
 
+
+	private List<AdAccount> getAccounts(TwAdsConfigParams config2) throws TwitterException {
+		if (config.getAccountNames() == null) {
+			return apiService.getAllAccounts(true);
+		}
+		return apiService.getAccountsByNames(config.getAccountNames(), config.getIncludeDeleted());
+	}
 
 	private List<ResultFileMetadata> closeWritersAndRetrieveResults() throws Exception {
 		List<ResultFileMetadata> allResults = new ArrayList<>();

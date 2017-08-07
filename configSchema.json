@@ -74,13 +74,15 @@
 				"propertyOrder": 2000,
 				"enum": [
 					"CAMPAIGN",
-					"LINE_ITEM"
+					"LINE_ITEM",
+					"ACCOUNT"
 				],
 				"default": "CAMPAIGN",
 				"options": {
 					"enum_titles": [
 						"Campaign",
-						"LineItem"
+						"LineItem",
+						"Account"
 					]
 				}
 			}
