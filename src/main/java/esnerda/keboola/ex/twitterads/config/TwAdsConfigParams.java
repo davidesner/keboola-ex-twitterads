@@ -111,6 +111,9 @@ public class TwAdsConfigParams extends IKBCParameters {
 	}
 
 	public List<String> getAccountNames() {
+		if (accountNames == null) {
+			return Collections.emptyList();
+		}
 		return accountNames;
 	}
 

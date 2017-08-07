@@ -95,7 +95,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		try {
 		List<AdAccount> accounts = getAccounts(config);
 		
-		if (config.getAccountNames() != null && accounts.size()< config.getAccountNames().size()) {
+		if (!config.getAccountNames().isEmpty() && accounts.size()< config.getAccountNames().size()) {
 			System.err.println("Some accounts were not found! " + getMissingAccounts(accounts));
 		}
 
@@ -181,7 +181,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 
 	private List<AdAccount> getAccounts(TwAdsConfigParams config2) throws TwitterException {
-		if (config.getAccountNames() == null) {
+		if (config.getAccountNames().isEmpty()) {
 			return apiService.getAllAccounts(true);
 		}
 		return apiService.getAccountsByNames(config.getAccountNames(), config.getIncludeDeleted());
