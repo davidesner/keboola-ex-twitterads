@@ -10,6 +10,7 @@ public class ResultFileMetadata {
 	private final File resFile;
 	private final String[] idColums;
 	private final String[] columns;
+	private boolean incremental;
 
 	public ResultFileMetadata(File resFile, String[] idColums, String[] columns) {
 		super();
@@ -29,5 +30,15 @@ public class ResultFileMetadata {
 	public String[] getColumns() {
 		return columns;
 	}
+
+	public boolean isIncremental() {
+		return incremental;
+	}
+
+	public void setIncremental(boolean incremental) {
+		this.incremental = incremental;
+	}
+	
+	
 
 }

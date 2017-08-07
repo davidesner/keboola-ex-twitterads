@@ -278,7 +278,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
-			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", new String[] { "id" });
+			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", null);
 			accountWriter.initWriter(handler.getOutputTablesPath(), AdAccount.class);
 		}
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv", new String[] { "tweetId" });

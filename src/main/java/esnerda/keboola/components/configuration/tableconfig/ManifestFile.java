@@ -172,7 +172,7 @@ public class ManifestFile {
 			if (incremental) {
 				b.setPrimaryKey(result.getIdColums());
 			}
-			b.setIncrementalLoad(incremental);
+			b.setIncrementalLoad(false);
         	return b;
         }
 
