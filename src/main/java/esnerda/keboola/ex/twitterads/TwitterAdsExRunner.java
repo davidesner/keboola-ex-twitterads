@@ -107,7 +107,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		
 		if(accounts.isEmpty()) {
 			System.err.println("No such accounts found!");
-			System.exit(0);
+			System.exit(1);
 		}
 
 		// init writers
