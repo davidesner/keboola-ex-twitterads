@@ -112,58 +112,62 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 		// init writers
 		initWriters();
-		//get entities
-		for (AdAccount acc : accounts) {
-			String accountId = acc.getId();
-		log.info("Retrieving Entities for account '" + acc.getName() +"'...");
-		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
-			campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
-			campaignsWriter.writeAllResults(CampaignWrapper.Builder.build(campaigns));
-		}
-		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
-			lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
-			lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems));
-		}
+		
+		//write accounts
 		if(config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
 			accountWriter.writeAllResults(apiService.getAllAccounts(config.getIncludeDeleted()));
 		}
-		/* Get implicit entities */
-		promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId, config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
 
-		//retrieve data only for recently updated
-		List<String> reqEntityIds = Collections.emptyList();
-		switch (config.getEntityTypeEnum()) {
-		case CAMPAIGN:
-			reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedCampaigns(campaigns, since));	
-			break;
-		case LINE_ITEM:
-			reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedLineItems(lineItems,since));
-			break;
-		}
-			List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
-					accountId, reqEntityIds, since.toInstant(), now);
-
-			int cnt=0;
-			for (AsyncAdsRequestChunk chunk : chunks) {
-				cnt++;
-				log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
-				Map<String, AdsStatsAsyncRequest> jdIds = apiService.submitAdStatsAsyncRequests(chunk.getRequestList());
-				log.info("Waiting to proccess " + cnt +". chunk of jobs..");
-				// collect finished
-				finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
-				// get unfinished
-				unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));
-				if (isTimedOut()) {
-					System.err.println("Job processing timed out!");
+		//get entities
+		for (AdAccount acc : accounts) {
+			String accountId = acc.getId();
+			log.info("Retrieving Entities for account '" + acc.getName() +"'...");
+			if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
+				campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
+				campaignsWriter.writeAllResults(CampaignWrapper.Builder.build(campaigns));
+			}
+			if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
+				lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
+				lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems));
+			}
+	
+			/* Get implicit entities */
+			promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId, config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
+	
+			//retrieve data only for recently updated
+			List<String> reqEntityIds = Collections.emptyList();
+			switch (config.getEntityTypeEnum()) {
+				case CAMPAIGN:
+					reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedCampaigns(campaigns, since));	
+					break;
+				case LINE_ITEM:
+					reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedLineItems(lineItems,since));
 					break;
 				}
-			}
-
-			log.info("Parsing results for account '" + acc.getName() +"'...");
-			for (JobDetails jd : finished) {
-				AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
-				performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
-			}			
+				List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
+						accountId, reqEntityIds, since.toInstant(), now);
+	
+				int cnt=0;
+				for (AsyncAdsRequestChunk chunk : chunks) {
+					cnt++;
+					log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
+					Map<String, AdsStatsAsyncRequest> jdIds = apiService.submitAdStatsAsyncRequests(chunk.getRequestList());
+					log.info("Waiting to proccess " + cnt +". chunk of jobs..");
+					// collect finished
+					finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
+					// get unfinished
+					unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));
+					if (isTimedOut()) {
+						System.err.println("Job processing timed out!");
+						break;
+					}
+				}
+	
+				log.info("Parsing results for account '" + acc.getName() +"'...");
+				for (JobDetails jd : finished) {
+					AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
+					performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
+				}			
 		}		
 
 			finalize(closeWritersAndRetrieveResults(), new TwAdsState(Date.from(now), unfinishedReqs));

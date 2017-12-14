@@ -49,7 +49,9 @@ public class LineItemWrapper {
 		this.matchRelevantPopularQueries = li.getMatchRelevantPopularQueries();
 		this.objective = li.getObjective();
 		this.optimization = li.getOptimization();
-		this.placements = joinPlacements(li.getPlacements());
+		if (this.placements != null) {
+			this.placements = joinPlacements(li.getPlacements());
+		}
 		if (li.getProductType() != null) {
 			this.productType = li.getProductType().name();
 		}
