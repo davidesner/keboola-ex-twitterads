@@ -16,13 +16,17 @@
 
 package twitter4j.conf;
 
+import java.io.ObjectStreamException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import twitter4j.internal.logging.Logger;
 import twitter4j.internal.models4j.Version;
 import twitter4j.internal.util.z_T4JInternalStringUtil;
-
-import java.io.ObjectStreamException;
-import java.lang.reflect.Field;
-import java.util.*;
 
 /**
  * Configuration base class with default settings.
@@ -114,16 +118,16 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
     private static final String DEFAULT_OAUTH_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
     private static final String DEFAULT_OAUTH_AUTHENTICATION_URL = "https://api.twitter.com/oauth/authenticate";
 
-    private static final String DEFAULT_REST_BASE_URL = "https://api.twitter.com/1.1/";
-    private static final String DEFAULT_STREAM_BASE_URL = "https://stream.twitter.com/1.1/";
-    private static final String DEFAULT_USER_STREAM_BASE_URL = "https://userstream.twitter.com/1.1/";
-    private static final String DEFAULT_SITE_STREAM_BASE_URL = "https://sitestream.twitter.com/1.1/";
+    private static final String DEFAULT_REST_BASE_URL = "https://api.twitter.com/2/";
+    private static final String DEFAULT_STREAM_BASE_URL = "https://stream.twitter.com/2/";
+    private static final String DEFAULT_USER_STREAM_BASE_URL = "https://userstream.twitter.com/2/";
+    private static final String DEFAULT_SITE_STREAM_BASE_URL = "https://sitestream.twitter.com/2/";
     private static final String DEFAULT_ADS_API_BASE_URL = "https://ads-api.twitter.com/";
     private static final String DEFAULT_ENGAGEMENT_API_BASE_URL = "https://data-api.twitter.com/insights/engagement/";
     private static final String DEFAULT_SANDBOX_ADS_API_BASE_URL = "https://ads-api-sandbox.twitter.com/";
-    private static final String DEFAULT_MEDIA_UPLOAD_BASE_URL = "https://upload.twitter.com/1.1/";
-    private static final String DEFAULT_SCOPED_TIME_LINE_BASE_URL = "https://api.twitter.com/1.1/";
-    private static final String DEFAULT_TON_UPLOAD_BASE_URL = "https://ton.twitter.com/1.1/ton/bucket/";
+    private static final String DEFAULT_MEDIA_UPLOAD_BASE_URL = "https://upload.twitter.com/2/";
+    private static final String DEFAULT_SCOPED_TIME_LINE_BASE_URL = "https://api.twitter.com/2/";
+    private static final String DEFAULT_TON_UPLOAD_BASE_URL = "https://ton.twitter.com/2/ton/bucket/";
     private static final String DEFAULT_TON_DOMAIN = "https//ton.twitter.com";
     public static final String DEFAULT_VIDEO_BASE_URL = "https://video.twitter.com/api/v1/videos";
     public static final String DEFAULT_VIDEO_IMAGE__BASE_URL = "https://video.twitter.com/api/v1/images";

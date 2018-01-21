@@ -49,7 +49,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterLeadGenerationCard> getLeadGenerationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(cardId, "CardId");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterLeadGenerationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
@@ -68,7 +68,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_LEAD_GENERATION_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterLeadGenerationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -87,7 +87,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -106,7 +106,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -116,7 +116,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterLeadGenerationCard> deleteLeadGenerationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterLeadGenerationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -127,7 +127,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_WEBSITE_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_WEBSITE_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -137,7 +137,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterWebsiteCard> getWebsiteCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(cardId, "CardId");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_WEBSITE_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_WEBSITE_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<VideoObjectResponseData>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
@@ -156,7 +156,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_WEBSITE_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_WEBSITE_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterWebsiteCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -174,7 +174,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_APP_DOWNLOAD_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterMobileAppCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -184,7 +184,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterMobileAppCard> getAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(cardId, "CardId");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
@@ -194,7 +194,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterVideoAppDownloadCard> deleteVideoAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -204,7 +204,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterMobileAppCard> deleteAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -214,7 +214,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterImageAppDownloadCard> deleteImageAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -243,7 +243,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                         submitUrl, customKeyScreenName, customKeyName, customKeyEmail, customParamKeys,
                         mediaId);
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_LEAD_GENERATION_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterLeadGenerationCard>>() {
         }.getType();
@@ -260,7 +260,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                         submitUrl, customKeyScreenName, customKeyName, customKeyEmail, customParamKeys,
                         mediaId);
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterLeadGenerationCard>>() {
         }.getType();
@@ -278,7 +278,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (TwitterAdUtil.isNotNull(count)) {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterImageConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -295,7 +295,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (TwitterAdUtil.isNotNull(count)) {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterVideoConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -307,7 +307,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         String mediaId = uploadImageForCards(channelImage, channelImageData);
 
         List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle, websiteUrl, mediaId);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_WEBSITE_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_WEBSITE_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
@@ -329,7 +329,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         final List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle, websiteUrl, mediaId);
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_WEBSITE_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_WEBSITE_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
@@ -343,7 +343,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 validateAndCreateParamsForCreateAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, customAppDescription, mediaId,
                         callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_APP_DOWNLOAD_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
@@ -359,7 +359,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 validateAndCreateParamsForUpdateAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, customAppDescription, mediaId,
                         callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
@@ -373,7 +373,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         List<HttpParameter> params =
                 validateAndCreateParamsForCreateImageAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, mediaId, callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
@@ -388,7 +388,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         List<HttpParameter> params =
                 validateAndCreateParamsForUpdateImageAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, mediaId, callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
@@ -406,7 +406,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 validateAndCreateParamsForCreateVideoAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, videoMediaId,
                         callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
@@ -454,7 +454,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 validateAndCreateParamsForUpdateVideoAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, videoMediaId,
                         callToActionValue);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
@@ -487,7 +487,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         String mediaId = uploadImageForCards(null, imageUrl);
         params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, mediaId));
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
@@ -506,7 +506,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         String mediaId = uploadImageForCards(null, imageUrl);
         params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, mediaId));
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
@@ -517,7 +517,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterImageConversationCard> deleteImageConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -539,7 +539,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         TwitterVideo video = twitterAdsClient.uploadAndCreateVideoObject(videoUrl, accountId);
         params.add(new HttpParameter(PARAM_VIDEO_ID, video.getId()));
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
@@ -566,7 +566,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             params.add(new HttpParameter(PARAM_VIDEO_ID, video.getId()));
         }
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
@@ -578,7 +578,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterVideoConversationCard> deleteVideoConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -599,7 +599,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     private BaseAdsResponse<TwitterVideoConversationCard> getVideoConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
@@ -838,7 +838,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     private BaseAdsResponse<TwitterImageConversationCard> getImageConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);

@@ -12,7 +12,7 @@ import static twitter4j.TwitterAdsConstants.PARAM_MEDIA_TYPE;
 import static twitter4j.TwitterAdsConstants.PARAM_SEGMENT_INDEX;
 import static twitter4j.TwitterAdsConstants.PARAM_TOTAL_BYTES;
 import static twitter4j.TwitterAdsConstants.PARAM_VIDEO_MEDIA_ID;
-import static twitter4j.TwitterAdsConstants.PREFIX_ACCOUNTS_V1;
+import static twitter4j.TwitterAdsConstants.PREFIX_ACCOUNTS_V2;
 import static twitter4j.TwitterAdsConstants.PREFIX_VIDEOS;
 import static twitter4j.TwitterAdsConstants.SLASH;
 import static twitter4j.TwitterAdsConstants.SUCCESSFULL_CALL_BEGIN_CODE;
@@ -572,7 +572,7 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     }
 
     private String createVideoObject(String mediaId, String accountId) throws TwitterException {
-        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PREFIX_VIDEOS;
+        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PREFIX_VIDEOS;
         //TODO add video title and description (optional)
         List<HttpParameter> params = createVideoObjectParams(mediaId);
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
@@ -592,7 +592,7 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
 
     public TwitterVideo waitForVideoProcessing(String accountId, String videoId, long maxWaitTime) throws TwitterException {
         Long totalWaitTime = 0L;
-        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PREFIX_VIDEOS + SLASH + videoId;
+        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V2 + accountId + PREFIX_VIDEOS + SLASH + videoId;
 
         Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
         }.getType();
