@@ -1,14 +1,18 @@
 package esnerda.keboola.ex.twitterads.ws.request;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
+import twitter4j.models.Granularity;
+import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.TwitterEntityType;
 
 /**
@@ -20,17 +24,17 @@ public class AdsStatsAsyncRequestBuilder {
 	private static final int MAX_ENTITY_COUNT = 20;
 	private static final int MAX_CHUNK_REQ_COUNT = 100;
 
-	public List<AsyncAdsRequestChunk> buildAdRequestsChunks(TwitterEntityType type, String accountId, List<String> entityIds, Instant startTime, Instant endTime) {
+	public List<AsyncAdsRequestChunk> buildAdRequestsChunks(TwitterEntityType type, AdAccount account, List<String> entityIds, Instant startTime, Instant endTime, Granularity gran) {
 		List<AdsStatsAsyncRequest> requests = new ArrayList<>();
 		List<List<String>> entityChunks = Lists.partition(entityIds, MAX_ENTITY_COUNT);
 		// split by allowed entity chunks	
-		
+		TimeZone tz = TimeZone.getTimeZone(ZoneId.of(account.getTimezone()));
 		for (List<String> entityChunk : entityChunks) {
-			TimeWindowIterator tIt = new TimeWindowIterator(startTime, endTime);
+			TimeWindowIterator tIt = new TimeWindowIterator(startTime, endTime, tz);
 			//iterate over time windows
 			while (tIt.hasNext()) {
 				TimeWindow tw = tIt.next();
-				requests.add(buildRequest(accountId, entityChunk, tw, type));
+				requests.add(buildRequest(account.getId(), entityChunk, tw, type, gran));
 			}
 		}
 
@@ -44,8 +48,8 @@ public class AdsStatsAsyncRequestBuilder {
 	 * @param window
 	 * @return
 	 */
-	private AdsStatsAsyncRequest buildRequest(String accountId, List<String> eIds, TimeWindow window, TwitterEntityType type) {
-		return new AdsStatsAsyncRequest(accountId, eIds, window.getStartTime(), window.getEndTime(), type);
+	private AdsStatsAsyncRequest buildRequest(String accountId, List<String> eIds, TimeWindow window, TwitterEntityType type, Granularity gran) {
+		return new AdsStatsAsyncRequest(accountId, eIds, window.getStartTime(), window.getEndTime(), type, gran);
 	}
 
 	/**
@@ -65,10 +69,10 @@ public class AdsStatsAsyncRequestBuilder {
 		private long cursor = 0;
 		private final long totalChunks;
 
-		public TimeWindowIterator(Instant startTime, Instant endTime) {
+		public TimeWindowIterator(Instant startTime, Instant endTime, TimeZone tz) {
 			super();
-			this.startTime = startTime.truncatedTo(ChronoUnit.HOURS);
-			this.endTime = endTime.truncatedTo(ChronoUnit.HOURS);
+			this.startTime = convertToTimezoneMidnight(startTime, tz);
+			this.endTime = convertToTimezoneMidnight(endTime, tz);
 			this.totalChunks = getNumberOfChunks();
 		}
 
@@ -86,6 +90,10 @@ public class AdsStatsAsyncRequestBuilder {
 			Instant endWindow = getNextEnd();
 			cursor ++;
 			return new TimeWindow(startWindow, endWindow);
+		}
+
+		private Instant convertToTimezoneMidnight(Instant time, TimeZone tz) {
+			return Instant.ofEpochMilli(time.truncatedTo(ChronoUnit.DAYS).toEpochMilli() + tz.getOffset(time.toEpochMilli()));
 		}
 
 		private Instant getNextStart() {

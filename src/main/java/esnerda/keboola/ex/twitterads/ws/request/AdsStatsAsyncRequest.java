@@ -26,13 +26,13 @@ public class AdsStatsAsyncRequest {
 	// not supported yet
 	private com.google.common.base.Optional<TwitterSegmentationType> segment;
 
-	public AdsStatsAsyncRequest(String accountId, List<String> entityIds, Instant startTime, Instant endTime, TwitterEntityType type) {
+	public AdsStatsAsyncRequest(String accountId, List<String> entityIds, Instant startTime, Instant endTime, TwitterEntityType type, Granularity granularity) {
 		super();
 		this.accountId = accountId;
 		this.entityIds = entityIds;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.granularity = Granularity.HOUR;
+		this.granularity = granularity;
 		this.objective = null;
 		this.placement = Placement.ALL_ON_TWITTER;
 		this.type = type;
