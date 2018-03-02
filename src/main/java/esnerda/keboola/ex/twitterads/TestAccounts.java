@@ -28,6 +28,7 @@ import twitter4j.api.TwitterAdsCampaignApi;
 import twitter4j.api.TwitterAdsLineItemApi;
 import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.Granularity;
 import twitter4j.models.ads.AdAccount;
 import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
@@ -53,7 +54,7 @@ public class TestAccounts {
 	       List<Campaign> cpgns = tService.getRecentlyUpdatedCampaigns("2dmkoj", false, Date.from(since));
 	       
 	       AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
-	       List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(TwitterEntityType.CAMPAIGN, "2dmkoj", getEntIds(cpgns), since, until);
+	       List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(TwitterEntityType.CAMPAIGN, null, getEntIds(cpgns), since, until, Granularity.DAY);
 	       List<JobDetails> finished = Collections.EMPTY_LIST;
 	       for (AsyncAdsRequestChunk chunk : chunks) {
 	    	  Map<String, AdsStatsAsyncRequest> jdIds =  tService.submitAdStatsAsyncRequests(chunk.getRequestList());
