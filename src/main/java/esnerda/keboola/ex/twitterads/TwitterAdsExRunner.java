@@ -25,6 +25,7 @@ import esnerda.keboola.ex.twitterads.config.TwAdsConfigParams.EntityDatasets;
 import esnerda.keboola.ex.twitterads.config.TwAdsState;
 import esnerda.keboola.ex.twitterads.config.TwitterAuthResponseParser;
 import esnerda.keboola.ex.twitterads.config.TwitterAuthTokens;
+import esnerda.keboola.ex.twitterads.result.wrapper.AccountsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdStatsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdsWrapperBuilder;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
@@ -67,7 +68,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	private static IResultWriter<LineItemWrapper> lineItemWriter;
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
-	private static IResultWriter<AdAccount> accountWriter;
+	private static IResultWriter<AccountsWrapper> accountWriter;
 
 	public TwitterAdsExRunner (String[] args) {
 		log = new DefaultLogger(TwitterAdsExRunner.class);
@@ -115,7 +116,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		
 		//write accounts
 		if(config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
-			accountWriter.writeAllResults(apiService.getAllAccounts(config.getIncludeDeleted()));
+			accountWriter.writeAllResults(AccountsWrapper.Builder.build(apiService.getAllAccounts(config.getIncludeDeleted())));
 		}
 
 		//get entities
@@ -145,7 +146,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 					break;
 				}
 				List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
-						accountId, reqEntityIds, since.toInstant(), now);
+						acc, reqEntityIds, since.toInstant(), now, config.getGranularityEnum());
 	
 				int cnt=0;
 				for (AsyncAdsRequestChunk chunk : chunks) {
@@ -283,7 +284,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
 			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", null);
-			accountWriter.initWriter(handler.getOutputTablesPath(), AdAccount.class);
+			accountWriter.initWriter(handler.getOutputTablesPath(), AccountsWrapper.class);
 		}
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv", new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
