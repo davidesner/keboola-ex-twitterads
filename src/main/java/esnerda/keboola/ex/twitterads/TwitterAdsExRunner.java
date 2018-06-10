@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.joda.time.LocalDate;
+
 import esnerda.keboola.components.KBCException;
 import esnerda.keboola.components.configuration.OAuthCredentials;
 import esnerda.keboola.components.configuration.handler.ConfigHandlerBuilder;
@@ -44,6 +46,7 @@ import twitter4j.models.ads.Campaign;
 import twitter4j.models.ads.JobDetails;
 import twitter4j.models.ads.LineItem;
 import twitter4j.models.ads.PromotedTweets;
+import twitter4j.models.ads.TwitterAsyncQueryStatus;
 import twitter4j.models.ads.TwitterEntity;
 import twitter4j.models.ads.TwitterEntityType;
 import twitter4j.models.ads.sort.CampaignSortByField;
@@ -57,6 +60,8 @@ import twitter4j.models.ads.sort.PromotedTweetsSortByField;
 public class TwitterAdsExRunner extends ComponentRunner{
 	
 	private static final long TIMEOUT = 9900000L; //3 hrs
+	
+	private static final int SINCE_DAYS_OFFSET = 1;
 
 	private KBCConfigurationEnvHandler handler;
 	private TwAdsConfigParams config;
@@ -79,7 +84,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			TwitterAuthTokens tokens = TwitterAuthResponseParser.parseOAuthData(creds.getData());
 			 TwitterAdsApiClient twClient = new TwitterAdsApiClient(new TwitterAdsWsConfig(creds.getAppKey(),
 					 creds.getAppSecret(), tokens.getoAuthToken(), tokens.getoAuthTokenSecret()));
-			apiService = new TwitterAdsApiService(twClient);			
+			apiService = new TwitterAdsApiService(twClient, log);			
 		
 		} catch (Exception e) {
 			handleException(new KBCException("Failed to init web service!", e.getMessage(), e, 2));
@@ -136,6 +141,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId, config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
 	
 			//retrieve data only for recently updated
+			log.info("Geting data since: " + since.toString());
 			List<String> reqEntityIds = Collections.emptyList();
 			switch (config.getEntityTypeEnum()) {
 				case CAMPAIGN:
@@ -156,8 +162,14 @@ public class TwitterAdsExRunner extends ComponentRunner{
 					log.info("Waiting to proccess " + cnt +". chunk of jobs..");
 					// collect finished
 					finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
+					checkForFailures(finished);
 					// get unfinished
-					unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));
+					unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));			
+					
+					if (!unfinishedReqs.isEmpty()) {
+						log.warning("Some jobs (" + unfinishedReqs.size() + ")  didn't finish in time. They might not be processed properly. Please use shorter interval!", null);
+					}
+
 					if (isTimedOut()) {
 						System.err.println("Job processing timed out!");
 						break;
@@ -184,6 +196,21 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 	}
 
+
+	private void checkForFailures(List<JobDetails> finished) throws KBCException {
+		boolean someNotFinished = false;
+		List<String> failedJobs = new ArrayList<>();
+		for (JobDetails jd : finished) {
+			if ((jd != null) && (jd.getStatus() == TwitterAsyncQueryStatus.FAILED)) {
+				failedJobs.add(jd.getUrl());
+			}				
+		}
+
+		if (!failedJobs.isEmpty()) {
+			throw new KBCException("Some jobs failed to submit! : " + String.join(" ", failedJobs), 2, null);
+		}
+		
+	}
 
 	private List<AdAccount> getAccounts(TwAdsConfigParams config2) throws TwitterException {
 		if (config.getAccountNames().isEmpty()) {
@@ -236,13 +263,14 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		if (!config.getSinceLast() || lastState == null || lastState.getLastRun() == null) {
 			return config.getSince();
 		} else {
-			return lastState.getLastRun();
+			return LocalDate.fromDateFields(lastState.getLastRun()).minusDays(SINCE_DAYS_OFFSET).toDate();
 		}
 	}
 
 	private List<AdsStatsAsyncRequest> getUnfinishedRequests(List<JobDetails> finishedJobs,  Map<String, AdsStatsAsyncRequest> submittedReqs) {
+
 		for (JobDetails jd : finishedJobs) {
-			submittedReqs.remove(jd.getJobId());
+				submittedReqs.remove(jd.getJobId());
 		}
 		return new ArrayList(submittedReqs.values());		
 	}

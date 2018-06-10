@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import esnerda.keboola.components.logging.KBCLogger;
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
 import twitter4j.BaseAdsListResponse;
 import twitter4j.internal.models4j.TwitterException;
@@ -30,12 +31,14 @@ public class TwitterAdsApiService {
 	//wait between status check reqs
 	private static final long JOB_CHECK_WAIT_INTERVAL = 10000L;
 	//wait hour for jobs chunk to finish
-	private static final long WAIT_TIMEOUT = 3600000L;
+	private static final long WAIT_TIMEOUT = 2700000L;
 
 	private final TwitterAdsApiClient client;
+	private final KBCLogger logger;
 
-	public TwitterAdsApiService(TwitterAdsApiClient client) {
+	public TwitterAdsApiService(TwitterAdsApiClient client, KBCLogger logger) {
 		this.client = client;
+		this.logger = logger;
 	}
 
 	public List<Campaign> getCampaigns(String accountId, boolean includeDeleted, CampaignSortByField sortBy) throws TwitterException {
@@ -109,17 +112,13 @@ public class TwitterAdsApiService {
 		boolean flag;
 		do {
 			TwitterAdUtil.reallySleep(10000L);
-			flag = false; // continue iterating as long as status of job of job is either queued, uploading or processing
 			try {
 				currentDetails = client.getJobsStatus(accountId, jobIds);
-				if (!allJobsFinished(currentDetails)) {
-					flag = true;
-				}
 			} catch (TwitterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Failed to process a job!", e);
 			}
-		} while (flag && (System.currentTimeMillis() - startTime) <= WAIT_TIMEOUT);
+		} while (!allJobsFinished(currentDetails) && (System.currentTimeMillis() - startTime) <= WAIT_TIMEOUT);
+		// continue iterating as long as status of job of job is either queued, uploading or processing
 
 		return currentDetails;
 	}
