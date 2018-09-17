@@ -13,8 +13,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import esnerda.keboola.components.configuration.IKBCParameters;
 import esnerda.keboola.components.configuration.ValidationException;
-import twitter4j.models.Granularity;
-import twitter4j.models.ads.TwitterEntityType;
+import twitter4jads.models.Granularity;
+import twitter4jads.models.ads.TwitterEntityType;
+
 
 /**
  * @author David Esner

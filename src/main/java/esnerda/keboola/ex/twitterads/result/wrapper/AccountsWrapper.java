@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import twitter4j.models.ads.AdAccount;
+import twitter4jads.models.ads.AdAccount;
+
+
 
 /**
  * @author David Esner

@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import twitter4j.models.ads.Campaign;
+import twitter4jads.models.ads.Campaign;
+
+
 
 /**
  * @author David Esner
@@ -41,11 +43,15 @@ public class CampaignWrapper {
 	@SerializedName("deleted")
 	private Boolean deleted;
 
+	@Deprecated //deprecated in v3, kept for backward compatibility	
 	@SerializedName("paused")
-	private Boolean paused;
+	private Boolean paused = false;
 
 	@SerializedName("servable")
 	private Boolean servable;
+	
+	@SerializedName("entity_status")
+	private String entityStatus;
 
 	@SerializedName("reasons_not_servable")
 	private String reasonsNotServable;
@@ -89,7 +95,8 @@ public class CampaignWrapper {
 		this.endTimeInUTC = camp.getEndTime();
 		this.frequencyCap = camp.getFrequencyCap();
 		this.fundingInstrumentId = camp.getFundingInstrumentId();		
-		this.paused = camp.getPaused();
+		this.paused = false;
+		this.entityStatus = camp.getEntityStatus();
 		if (camp.getReasonsNotServable() !=null) {
 		this.reasonsNotServable = String.join(";", camp.getReasonsNotServable());
 		}
@@ -166,6 +173,10 @@ public class CampaignWrapper {
 
 	public Integer getDurationInDays() {
 		return durationInDays;
+	}
+
+	public String getEntityStatus() {
+		return entityStatus;
 	}
 
 	public static class Builder {

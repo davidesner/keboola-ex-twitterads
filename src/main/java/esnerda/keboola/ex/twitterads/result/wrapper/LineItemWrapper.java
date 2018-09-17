@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
 
-import twitter4j.models.ads.LineItem;
-import twitter4j.models.ads.Placement;
+import twitter4jads.models.ads.LineItem;
+import twitter4jads.models.ads.Placement;
+
+
 
 /**
  * @author David Esner
@@ -31,7 +33,8 @@ public class LineItemWrapper {
 		this.accountId = li.getAccountId();
 		this.currency = li.getCurrency();
 		this.deleted = li.getDeleted();
-		this.paused = li.getPaused();
+		this.paused = false;
+		this.entityStatus = li.getStatus().name();
 		this.advertiserDomain = li.getAdvertiserDomain();
 		this.advertiserUserId = li.getAdvertiserUserId();
 		this.automaticallySelectBid = li.isAutomaticallySelectBid();
@@ -106,8 +109,12 @@ public class LineItemWrapper {
 	@SerializedName("include_sentiment")
 	private String sentiment;
 
+	@Deprecated //deprecated in v3, kept for backward compatibility
 	@SerializedName("paused")
-	private Boolean paused;
+	private Boolean paused = false;
+
+	@SerializedName("entity_status")
+	private String entityStatus;
 
 	@SerializedName("primary_web_event_tag")
 	private String webEventTag;
@@ -257,6 +264,10 @@ public class LineItemWrapper {
 	}
 
 	public LineItemWrapper() {
+	}
+
+	public String getEntityStatus() {
+		return entityStatus;
 	}
 
 	public static class Builder {

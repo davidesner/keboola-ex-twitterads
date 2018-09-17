@@ -3,11 +3,13 @@
 import java.time.Instant;
 import java.util.List;
 
-import twitter4j.models.Granularity;
-import twitter4j.models.TwitterSegmentationType;
-import twitter4j.models.ads.Placement;
-import twitter4j.models.ads.TwitterAdObjective;
-import twitter4j.models.ads.TwitterEntityType;
+import twitter4jads.models.Granularity;
+import twitter4jads.models.TwitterSegmentationType;
+import twitter4jads.models.ads.Placement;
+import twitter4jads.models.ads.TwitterAdObjective;
+import twitter4jads.models.ads.TwitterEntityType;
+
+
 
 /**
  * @author David Esner

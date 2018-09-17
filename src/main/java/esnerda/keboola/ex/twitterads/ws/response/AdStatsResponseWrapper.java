@@ -4,8 +4,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import twitter4j.BaseAdsListResponse;
-import twitter4j.models.ads.TwitterEntityStatistics;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.models.ads.TwitterEntityStatistics;
+
+
 
 /**
  * @author David Esner

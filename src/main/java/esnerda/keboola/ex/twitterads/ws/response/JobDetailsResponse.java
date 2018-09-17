@@ -1,7 +1,8 @@
 package esnerda.keboola.ex.twitterads.ws.response;
 
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
-import twitter4j.models.ads.JobDetails;
+import twitter4jads.models.ads.JobDetails;
+
 
 /**
  * @author David Esner

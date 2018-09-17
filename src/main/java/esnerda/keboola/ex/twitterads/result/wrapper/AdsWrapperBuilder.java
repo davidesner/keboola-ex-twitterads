@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import esnerda.keboola.ex.twitterads.ws.response.AdStatsResponseWrapper;
-import twitter4j.models.ads.NewTwitterAdStatistics;
-import twitter4j.models.ads.TwitterEntityStatistics;
+import twitter4jads.models.ads.TwitterAdStatistics;
+import twitter4jads.models.ads.TwitterEntityStatistics;
+
 
 /**
  * @author David Esner
@@ -40,7 +41,7 @@ public class AdsWrapperBuilder {
 	 * @param result
 	 * @throws Exception
 	 */
-	private static void buildRecordsForEntity(String entityId, NewTwitterAdStatistics stats, List<AdStatsWrapper> result) throws Exception {
+	private static void buildRecordsForEntity(String entityId, TwitterAdStatistics stats, List<AdStatsWrapper> result) throws Exception {
 		for (int i = 0; i < seriesLength; i++) {
 			AdStatsWrapper wr = new AdStatsWrapper();
 			wr.setEntityId(entityId);
@@ -57,14 +58,14 @@ public class AdsWrapperBuilder {
 	 * @param currIndex
 	 * @throws Exception 
 	 */
-	private static void setAllFieldsUsingReflection(NewTwitterAdStatistics stats, AdStatsWrapper wr, int currIndex) throws Exception {
+	private static void setAllFieldsUsingReflection(TwitterAdStatistics stats, AdStatsWrapper wr, int currIndex) throws Exception {
 		Method[] allMethods = wr.getClass().getMethods();
 
 		for (Method method : allMethods) {
 			String setterName = method.getName();
 			if (setterName.startsWith("set") &&  !isCustomMethod(setterName)) {				
 					String currValue = getAccordingValue(stats, setterName, currIndex);					
-					method.invoke(wr, currValue);				
+					method.invoke(wr, currValue);
 			}
 		}
 	}
@@ -77,8 +78,15 @@ public class AdsWrapperBuilder {
 	 * @return
 	 * @throws Exception
 	 */
-	private static String getAccordingValue(NewTwitterAdStatistics stats, String setterName, int currIndex) throws Exception {
-		Object invoke = stats.getClass().getMethod(setterName.replaceFirst("set", "get"), null).invoke(stats, null);
+	private static String getAccordingValue(TwitterAdStatistics stats, String setterName, int currIndex) throws Exception {
+		String getterName = setterName.replaceFirst("set", "get");
+		//fix so reflection works
+		switch (getterName) {
+			case "getVideo3s100pctViews":
+				getterName = "getVideo3s100PercentViews";
+				break;
+		}
+		Object invoke = stats.getClass().getMethod(getterName, null).invoke(stats, null);
 		return invoke!=null ? ((String []) invoke)[currIndex] : "";
 	}
 	

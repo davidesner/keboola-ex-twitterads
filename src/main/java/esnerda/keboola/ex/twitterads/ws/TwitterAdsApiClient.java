@@ -4,27 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
-import twitter4j.BaseAdsListResponse;
-import twitter4j.BaseAdsListResponseIterable;
-import twitter4j.BaseAdsResponse;
-import twitter4j.TwitterAds;
-import twitter4j.TwitterAdsFactory;
-import twitter4j.api.TwitterAdsAccountApi;
-import twitter4j.api.TwitterAdsCampaignApi;
-import twitter4j.api.TwitterAdsLineItemApi;
-import twitter4j.api.TwitterAdsPromotedTweetApi;
-import twitter4j.api.TwitterAdsStatApi;
-import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.internal.models4j.TwitterException;
-import twitter4j.models.ads.AdAccount;
-import twitter4j.models.ads.Campaign;
-import twitter4j.models.ads.JobDetails;
-import twitter4j.models.ads.LineItem;
-import twitter4j.models.ads.PromotedTweets;
-import twitter4j.models.ads.TwitterEntityStatistics;
-import twitter4j.models.ads.sort.CampaignSortByField;
-import twitter4j.models.ads.sort.LineItemsSortByField;
-import twitter4j.models.ads.sort.PromotedTweetsSortByField;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAds;
+import twitter4jads.TwitterAdsFactory;
+import twitter4jads.api.TwitterAdsAccountApi;
+import twitter4jads.api.TwitterAdsCampaignApi;
+import twitter4jads.api.TwitterAdsLineItemApi;
+import twitter4jads.api.TwitterAdsPromotedTweetApi;
+import twitter4jads.api.TwitterAdsStatApi;
+import twitter4jads.conf.ConfigurationBuilder;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ads.AdAccount;
+import twitter4jads.models.ads.Campaign;
+import twitter4jads.models.ads.JobDetails;
+import twitter4jads.models.ads.LineItem;
+import twitter4jads.models.ads.PromotedTweets;
+import twitter4jads.models.ads.TwitterEntityStatistics;
+import twitter4jads.models.ads.sort.CampaignSortByField;
+import twitter4jads.models.ads.sort.LineItemsSortByField;
+import twitter4jads.models.ads.sort.PromotedTweetsSortByField;
 
 /**
  * @author David Esner
@@ -75,7 +75,7 @@ public class TwitterAdsApiClient {
 	public List<PromotedTweets> getPromotedTweets(String accountId, boolean withDeleted, PromotedTweetsSortByField sortBy)
 			throws TwitterException {
 		TwitterAdsPromotedTweetApi promotedTwApi = clientInstance.getPromotedTweetApi();
-		BaseAdsListResponseIterable<PromotedTweets> promotedTweets = promotedTwApi.getAllPromotedTweets(accountId, null, withDeleted, null, null, com.google.common.base.Optional.fromNullable(sortBy));
+		BaseAdsListResponseIterable<PromotedTweets> promotedTweets = promotedTwApi.getAllPromotedTweets(accountId, withDeleted, null, null, null, com.google.common.base.Optional.fromNullable(sortBy));
 
 		return transformListResponseToList(promotedTweets);
 	}
@@ -85,7 +85,7 @@ public class TwitterAdsApiClient {
 
 		BaseAdsResponse<JobDetails> twitterAsyncJob = statApi.createAsyncJob(req.getAccountId(), req.getType(),
 				req.getEntityIds(), req.getStartTimeEpoch(), req.getEndTimeEpoch(), req.isWithDeleted(),
-				req.getGranularity(), req.getObjective(), req.getPlacement(), req.getSegment());
+				req.getGranularity(), req.getPlacement(), req.getSegment());
 		return twitterAsyncJob.getData();
 
 	}

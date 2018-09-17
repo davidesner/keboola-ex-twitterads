@@ -9,19 +9,19 @@ import java.util.stream.Collectors;
 
 import esnerda.keboola.components.logging.KBCLogger;
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
-import twitter4j.BaseAdsListResponse;
-import twitter4j.internal.models4j.TwitterException;
-import twitter4j.models.ads.AdAccount;
-import twitter4j.models.ads.Campaign;
-import twitter4j.models.ads.JobDetails;
-import twitter4j.models.ads.LineItem;
-import twitter4j.models.ads.PromotedTweets;
-import twitter4j.models.ads.TwitterAsyncQueryStatus;
-import twitter4j.models.ads.TwitterEntityStatistics;
-import twitter4j.models.ads.sort.CampaignSortByField;
-import twitter4j.models.ads.sort.LineItemsSortByField;
-import twitter4j.models.ads.sort.PromotedTweetsSortByField;
-import twitter4j.util.TwitterAdUtil;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ads.AdAccount;
+import twitter4jads.models.ads.Campaign;
+import twitter4jads.models.ads.JobDetails;
+import twitter4jads.models.ads.LineItem;
+import twitter4jads.models.ads.PromotedTweets;
+import twitter4jads.models.ads.TwitterAsyncQueryStatus;
+import twitter4jads.models.ads.TwitterEntityStatistics;
+import twitter4jads.models.ads.sort.CampaignSortByField;
+import twitter4jads.models.ads.sort.LineItemsSortByField;
+import twitter4jads.models.ads.sort.PromotedTweetsSortByField;
+import twitter4jads.util.TwitterAdUtil;
 
 /**
  * @author David Esner

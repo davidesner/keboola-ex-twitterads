@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
-import twitter4j.models.Granularity;
-import twitter4j.models.ads.AdAccount;
-import twitter4j.models.ads.TwitterEntityType;
+import twitter4jads.models.Granularity;
+import twitter4jads.models.ads.AdAccount;
+import twitter4jads.models.ads.TwitterEntityType;
+
+
 
 /**
  * @author David Esner
