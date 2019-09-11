@@ -14,9 +14,6 @@ before_script:
   - docker push $REPOSITORY:test
   - docker pull quay.io/keboola/syrup-cli:latest
 
-script:
-  - docker run --rm -e KBC_STORAGE_TOKEN quay.io/keboola/syrup-cli:latest run-job $KBC_DEVELOPERPORTAL_APP $KBC_APP_TEST_CONFIG test
-
 after_success:
   - docker images
 deploy:
