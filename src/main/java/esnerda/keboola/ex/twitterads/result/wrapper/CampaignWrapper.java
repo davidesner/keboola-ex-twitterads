@@ -83,10 +83,11 @@ public class CampaignWrapper {
 	public CampaignWrapper() {
 	}
 
-	public CampaignWrapper(Campaign camp) {
+	public CampaignWrapper(Campaign camp, String accountId) {
 		this.id = camp.getId();
 		this.name = camp.getName();
-		this.accountId = camp.getAccountId();
+		// from some point, the API does not return account id
+		this.accountId = accountId;
 		this.createTimeInUTC = camp.getCreateTime();
 		this.currency = camp.getCurrency();
 		this.dailyBudgetInMicro = camp.getDailyBudgetInMicro();
@@ -180,12 +181,12 @@ public class CampaignWrapper {
 	}
 
 	public static class Builder {
-		public static List<CampaignWrapper> build(List<Campaign> campaigns) {
+		public static List<CampaignWrapper> build(List<Campaign> campaigns, String accountId) {
 			List<CampaignWrapper> result = new ArrayList<>();
 			if (campaigns == null) {
 				return result;
 			}
-			campaigns.forEach(t -> result.add(new CampaignWrapper(t)));
+			campaigns.forEach(t -> result.add(new CampaignWrapper(t, accountId)));
 			return result;
 		}
 	}
