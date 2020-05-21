@@ -132,7 +132,6 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			log.info("Retrieving Entities for account '" + acc.getName() +"'...");
 			if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
 				campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
-				log.info(campaigns.get(0).getAccountId());
 				campaignsWriter.writeAllResults(CampaignWrapper.Builder.build(campaigns, accountId));
 			}
 			if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
