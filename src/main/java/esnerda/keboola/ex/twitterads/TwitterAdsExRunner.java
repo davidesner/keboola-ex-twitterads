@@ -136,7 +136,7 @@ public class TwitterAdsExRunner extends ComponentRunner{
 			}
 			if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
 				lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
-				lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems));
+				lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems, accountId));
 			}
 	
 			/* Get implicit entities */

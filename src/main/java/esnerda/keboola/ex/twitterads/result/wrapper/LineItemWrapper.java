@@ -27,10 +27,11 @@ public class LineItemWrapper {
 		this.id = id;
 	}
 
-	public LineItemWrapper(LineItem li) {
+	public LineItemWrapper(LineItem li, String accountId) {
 		this.id = li.getId();
 		this.name = li.getName();
-		this.accountId = li.getAccountId();
+		// from some point the API does not return the underlying accountID
+		this.accountId = accountId;
 		this.currency = li.getCurrency();
 		this.deleted = li.getDeleted();
 		this.paused = false;
@@ -271,12 +272,12 @@ public class LineItemWrapper {
 	}
 
 	public static class Builder {
-		public static List<LineItemWrapper> build(List<LineItem> LineItems) {
+		public static List<LineItemWrapper> build(List<LineItem> LineItems, String accountId) {
 			List<LineItemWrapper> result = new ArrayList<>();
 			if (LineItems == null) {
 				return result;
 			}
-			LineItems.forEach(t -> result.add(new LineItemWrapper(t)));
+			LineItems.forEach(t -> result.add(new LineItemWrapper(t, accountId)));
 			return result;
 		}
 	}
