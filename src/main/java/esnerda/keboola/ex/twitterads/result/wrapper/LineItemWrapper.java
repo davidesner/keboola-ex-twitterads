@@ -40,7 +40,7 @@ public class LineItemWrapper {
 		this.advertiserUserId = li.getAdvertiserUserId();
 		this.automaticallySelectBid = li.isAutomaticallySelectBid();
 		this.bidAmtInMicro = li.getBidAmtInMicro();
-		this.bidType = li.getBidType().name();
+		this.bidType = li.getBidType() != null ? li.getBidType().name() : null;
 		this.bidUnit = li.getBidUnit();
 		this.campaignId = li.getCampaignId();
 		if (li.getCategories() != null) {
