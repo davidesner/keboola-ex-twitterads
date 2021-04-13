@@ -16,11 +16,10 @@ public class AppDownloadCardWrapper extends AbstractAppCard {
 
 	private String id;
 
-	public final static String[] COLUMNS = { "cardType", "iphoneAppId", "ipadAppId",
+	public final static String[] COLUMNS = { "id", "cardType", "iphoneAppId", "ipadAppId",
 			"googleplayAppId", "iphoneDeepLink", "ipadDeepLink", "googleplayDeepLink",
-			"countryCode", "appCta", "id", "channelVideoId", "channelVideoUrl",
-			"channelVideoLength", "channelImageId", "posterVideoUrl", "wideAppImage",
-			"wideAppImageData" };
+			"countryCode", "appCta", "channelVideoId", "channelVideoUrl", "channelVideoLength",
+			"channelImageId", "posterVideoUrl", "wideAppImage", "wideAppImageData" };
 
 	public String getId() {
 		return id;
