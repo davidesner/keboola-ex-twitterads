@@ -75,14 +75,16 @@
 				"enum": [
 					"CAMPAIGN",
 					"LINE_ITEM",
-					"ACCOUNT"
+					"ACCOUNT",
+					"APP_CARDS"
 				],
 				"default": "CAMPAIGN",
 				"options": {
 					"enum_titles": [
 						"Campaign",
 						"LineItem",
-						"Account"
+						"Account",
+						"App Download Cards"
 					]
 				}
 			}

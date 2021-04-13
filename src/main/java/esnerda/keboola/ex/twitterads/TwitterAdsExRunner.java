@@ -30,6 +30,7 @@ import esnerda.keboola.ex.twitterads.config.TwitterAuthTokens;
 import esnerda.keboola.ex.twitterads.result.wrapper.AccountsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdStatsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdsWrapperBuilder;
+import esnerda.keboola.ex.twitterads.result.wrapper.AppDownloadCardWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.LineItemWrapper;
 import esnerda.keboola.ex.twitterads.util.CsvUtil;
@@ -49,20 +50,19 @@ import twitter4jads.models.ads.PromotedTweets;
 import twitter4jads.models.ads.TwitterAsyncQueryStatus;
 import twitter4jads.models.ads.TwitterEntity;
 import twitter4jads.models.ads.TwitterEntityType;
+import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedTweetsSortByField;
 
-
-
-
 /**
  * @author David Esner
  */
-public class TwitterAdsExRunner extends ComponentRunner{
-	
-	private static final long TIMEOUT = 9900000L; //3 hrs
-	
+public class TwitterAdsExRunner extends ComponentRunner {
+
+	private static final long TIMEOUT = 9900000L; // 3 hrs
+
 	private static final int SINCE_DAYS_OFFSET = 1;
 
 	private KBCConfigurationEnvHandler handler;
@@ -73,21 +73,23 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	private static IResultWriter<AdStatsWrapper> performanceDataWriter;
 	private static IResultWriter<CampaignWrapper> campaignsWriter;
 	private static IResultWriter<LineItemWrapper> lineItemWriter;
+	private static IResultWriter<AppDownloadCardWrapper> appCardWriter;
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
 	private static IResultWriter<AccountsWrapper> accountWriter;
 
-	public TwitterAdsExRunner (String[] args) {
+	public TwitterAdsExRunner(String[] args) {
 		log = new DefaultLogger(TwitterAdsExRunner.class);
 		handler = initHandler(args, log);
-		config = (TwAdsConfigParams) handler.getParameters();		
+		config = (TwAdsConfigParams) handler.getParameters();
 		try {
 			OAuthCredentials creds = handler.getOAuthCredentials();
 			TwitterAuthTokens tokens = TwitterAuthResponseParser.parseOAuthData(creds.getData());
-			 TwitterAdsApiClient twClient = new TwitterAdsApiClient(new TwitterAdsWsConfig(creds.getAppKey(),
-					 creds.getAppSecret(), tokens.getoAuthToken(), tokens.getoAuthTokenSecret()));
-			apiService = new TwitterAdsApiService(twClient, log);			
-		
+			TwitterAdsApiClient twClient = new TwitterAdsApiClient(
+					new TwitterAdsWsConfig(creds.getAppKey(), creds.getAppSecret(),
+							tokens.getoAuthToken(), tokens.getoAuthTokenSecret()));
+			apiService = new TwitterAdsApiService(twClient, log);
+
 		} catch (Exception e) {
 			handleException(new KBCException("Failed to init web service!", e.getMessage(), e, 2));
 		}
@@ -101,75 +103,103 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
 
 		try {
-		List<AdAccount> accounts = getAccounts(config);
-		
-		if (!config.getAccountNames().isEmpty() && accounts.size()< config.getAccountNames().size()) {
-			System.err.println("Some accounts were not found! " + getMissingAccounts(accounts));
-		}
+			List<AdAccount> accounts = getAccounts(config);
 
-		Instant now = Instant.now();
-		Date since = getSinceDate();
-
-		List<JobDetails> finished = Collections.emptyList();
-		List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
-		
-		if(accounts.isEmpty()) {
-			System.err.println("No such accounts found!");
-			System.exit(1);
-		}
-
-		// init writers
-		initWriters();
-		
-		//write accounts
-		if(config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
-			accountWriter.writeAllResults(AccountsWrapper.Builder.build(apiService.getAllAccounts(config.getIncludeDeleted())));
-		}
-
-		//get entities
-		for (AdAccount acc : accounts) {
-			String accountId = acc.getId();
-			log.info("Retrieving Entities for account '" + acc.getName() +"'...");
-			if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
-				campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(), CampaignSortByField.UPDATED_AT_DESC);
-				campaignsWriter.writeAllResults(CampaignWrapper.Builder.build(campaigns, accountId));
+			if (!config.getAccountNames().isEmpty()
+					&& accounts.size() < config.getAccountNames().size()) {
+				System.err.println("Some accounts were not found! " + getMissingAccounts(accounts));
 			}
-			if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
-				lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(), LineItemsSortByField.UPDATED_AT);
-				lineItemWriter.writeAllResults(LineItemWrapper.Builder.build(lineItems, accountId));
+
+			Instant now = Instant.now();
+			Date since = getSinceDate();
+
+			List<JobDetails> finished = Collections.emptyList();
+			List<AdsStatsAsyncRequest> unfinishedReqs = new ArrayList<>();
+
+			if (accounts.isEmpty()) {
+				System.err.println("No such accounts found!");
+				System.exit(1);
 			}
-	
-			/* Get implicit entities */
-			promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId, config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
-	
-			//retrieve data only for recently updated
-			log.info("Geting data since: " + since.toString());
-			List<String> reqEntityIds = Collections.emptyList();
-			switch (config.getEntityTypeEnum()) {
+
+			// init writers
+			initWriters();
+
+			// write accounts
+			if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
+				accountWriter.writeAllResults(AccountsWrapper.Builder
+						.build(apiService.getAllAccounts(config.getIncludeDeleted())));
+			}
+
+			// get entities
+			for (AdAccount acc : accounts) {
+				String accountId = acc.getId();
+				log.info("Retrieving Entities for account '" + acc.getName() + "'...");
+				if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name())
+						|| config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
+					campaigns = apiService.getCampaigns(accountId, config.getIncludeDeleted(),
+							CampaignSortByField.UPDATED_AT_DESC);
+					campaignsWriter
+							.writeAllResults(CampaignWrapper.Builder.build(campaigns, accountId));
+				}
+				if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name())
+						|| config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
+					lineItems = apiService.getLineItems(accountId, config.getIncludeDeleted(),
+							LineItemsSortByField.UPDATED_AT);
+					lineItemWriter
+							.writeAllResults(LineItemWrapper.Builder.build(lineItems, accountId));
+				}
+				if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
+					List<TwitterVideoAppDownloadCard> videoCards = apiService
+							.getVideoAppDownloadCards(accountId, config.getIncludeDeleted());
+					appCardWriter.writeAllResults(
+							AppDownloadCardWrapper.Builder.build(videoCards, accountId));
+
+					List<TwitterImageAppDownloadCard> imageCards = apiService
+							.getImageoAppDownloadCards(accountId, config.getIncludeDeleted());
+					appCardWriter.writeAllResults(
+							AppDownloadCardWrapper.Builder.build(imageCards, accountId));
+				}
+
+				/* Get implicit entities */
+				promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId,
+						config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
+
+				// retrieve data only for recently updated
+				log.info("Geting data since: " + since.toString());
+				List<String> reqEntityIds = Collections.emptyList();
+				switch (config.getEntityTypeEnum()) {
 				case CAMPAIGN:
-					reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedCampaigns(campaigns, since));	
+					reqEntityIds = getEntIds(
+							apiService.filterRecentlyUpdatedCampaigns(campaigns, since));
 					break;
 				case LINE_ITEM:
-					reqEntityIds = getEntIds(apiService.filterRecentlyUpdatedLineItems(lineItems,since));
+					reqEntityIds = getEntIds(
+							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
+
 				}
-				List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(config.getEntityTypeEnum(),
-						acc, reqEntityIds, since.toInstant(), now, config.getGranularityEnum());
-	
-				int cnt=0;
+				List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(
+						config.getEntityTypeEnum(), acc, reqEntityIds, since.toInstant(), now,
+						config.getGranularityEnum());
+
+				int cnt = 0;
 				for (AsyncAdsRequestChunk chunk : chunks) {
 					cnt++;
 					log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
-					Map<String, AdsStatsAsyncRequest> jdIds = apiService.submitAdStatsAsyncRequests(chunk.getRequestList());
-					log.info("Waiting to proccess " + cnt +". chunk of jobs..");
+					Map<String, AdsStatsAsyncRequest> jdIds = apiService
+							.submitAdStatsAsyncRequests(chunk.getRequestList());
+					log.info("Waiting to proccess " + cnt + ". chunk of jobs..");
 					// collect finished
-					finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(), new ArrayList(jdIds.keySet()));
+					finished = apiService.waitForAllJobsToFinish(chunk.getChunkAccountId(),
+							new ArrayList(jdIds.keySet()));
 					checkForFailures(finished);
 					// get unfinished
-					unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));			
-					
+					unfinishedReqs.addAll(getUnfinishedRequests(finished, jdIds));
+
 					if (!unfinishedReqs.isEmpty()) {
-						log.warning("Some jobs (" + unfinishedReqs.size() + ")  didn't finish in time. They might not be processed properly. Please use shorter interval!", null);
+						log.warning("Some jobs (" + unfinishedReqs.size()
+								+ ")  didn't finish in time. They might not be processed properly. Please use shorter interval!",
+								null);
 					}
 
 					if (isTimedOut()) {
@@ -177,15 +207,18 @@ public class TwitterAdsExRunner extends ComponentRunner{
 						break;
 					}
 				}
-	
-				log.info("Parsing results for account '" + acc.getName() +"'...");
-				for (JobDetails jd : finished) {
-					AdStatsResponseWrapper resp = new AdStatsResponseWrapper(apiService.fetchJobDataAsync(jd));
-					performanceDataWriter.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
-				}			
-		}		
 
-			finalize(closeWritersAndRetrieveResults(), new TwAdsState(Date.from(now), unfinishedReqs));
+				log.info("Parsing results for account '" + acc.getName() + "'...");
+				for (JobDetails jd : finished) {
+					AdStatsResponseWrapper resp = new AdStatsResponseWrapper(
+							apiService.fetchJobDataAsync(jd));
+					performanceDataWriter
+							.writeAllResults((AdsWrapperBuilder.buildFromResponse(resp)));
+				}
+			}
+
+			finalize(closeWritersAndRetrieveResults(),
+					new TwAdsState(Date.from(now), unfinishedReqs));
 			deleteEmptyFiles();
 			log.info("Extraction finished successfuly!");
 		} catch (KBCException e) {
@@ -198,20 +231,20 @@ public class TwitterAdsExRunner extends ComponentRunner{
 
 	}
 
-
 	private void checkForFailures(List<JobDetails> finished) throws KBCException {
 		boolean someNotFinished = false;
 		List<String> failedJobs = new ArrayList<>();
 		for (JobDetails jd : finished) {
 			if ((jd != null) && (jd.getStatus() == TwitterAsyncQueryStatus.FAILED)) {
 				failedJobs.add(jd.getUrl());
-			}				
+			}
 		}
 
 		if (!failedJobs.isEmpty()) {
-			throw new KBCException("Some jobs failed to submit! : " + String.join(" ", failedJobs), 2, null);
+			throw new KBCException("Some jobs failed to submit! : " + String.join(" ", failedJobs),
+					2, null);
 		}
-		
+
 	}
 
 	private List<AdAccount> getAccounts(TwAdsConfigParams config2) throws TwitterException {
@@ -239,6 +272,9 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		if (accountWriter != null) {
 			allResults.addAll(accountWriter.closeAndRetrieveMetadata());
 		}
+		if (appCardWriter != null) {
+			allResults.addAll(appCardWriter.closeAndRetrieveMetadata());
+		}
 
 		return allResults;
 	}
@@ -252,34 +288,39 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	}
 
 	private String getMissingAccounts(List<AdAccount> accs) {
-		List<String> accNames = accs.parallelStream().map(a -> a.getName()).collect(Collectors.toList());
-		return String.join(";", config.getAccountNames().stream().filter(a -> !accNames.contains(a)).map(a -> a)
-				.collect(Collectors.toList()));
+		List<String> accNames = accs.parallelStream().map(a -> a.getName())
+				.collect(Collectors.toList());
+		return String.join(";", config.getAccountNames().stream().filter(a -> !accNames.contains(a))
+				.map(a -> a).collect(Collectors.toList()));
 	}
+
 	private List<String> getEntIds(List cpgns) {
-		return (List<String>) cpgns.stream().map(c -> ((TwitterEntity)c).getId()).collect(Collectors.toList());
+		return (List<String>) cpgns.stream().map(c -> ((TwitterEntity) c).getId())
+				.collect(Collectors.toList());
 	}
 
 	private Date getSinceDate() throws KBCException {
-		TwAdsState lastState = (TwAdsState) handler.getStateFile();		
+		TwAdsState lastState = (TwAdsState) handler.getStateFile();
 		if (!config.getSinceLast() || lastState == null || lastState.getLastRun() == null) {
 			return config.getSince();
 		} else {
-			return LocalDate.fromDateFields(lastState.getLastRun()).minusDays(SINCE_DAYS_OFFSET).toDate();
+			return LocalDate.fromDateFields(lastState.getLastRun()).minusDays(SINCE_DAYS_OFFSET)
+					.toDate();
 		}
 	}
 
-	private List<AdsStatsAsyncRequest> getUnfinishedRequests(List<JobDetails> finishedJobs,  Map<String, AdsStatsAsyncRequest> submittedReqs) {
+	private List<AdsStatsAsyncRequest> getUnfinishedRequests(List<JobDetails> finishedJobs,
+			Map<String, AdsStatsAsyncRequest> submittedReqs) {
 
 		for (JobDetails jd : finishedJobs) {
-				submittedReqs.remove(jd.getJobId());
+			submittedReqs.remove(jd.getJobId());
 		}
-		return new ArrayList(submittedReqs.values());		
+		return new ArrayList(submittedReqs.values());
 	}
 
-
 	protected ManifestFile generateManifestFile(ResultFileMetadata result) throws KBCException {
-		return ManifestFile.Builder.buildDefaultFromResult(result, null, config.getIncremental()).build();
+		return ManifestFile.Builder.buildDefaultFromResult(result, null, config.getIncremental())
+				.build();
 	}
 
 	@Override
@@ -297,28 +338,37 @@ public class TwitterAdsExRunner extends ComponentRunner{
 		setHandler(handler);
 		return handler;
 	}
-	
 
 	@Override
 	protected void initWriters() throws Exception {
 		this.performanceDataWriter = new DefaultBeanResultWriter<>(
-				config.getEntityType().toLowerCase() + "PerformanceData.csv", new String[] { "entityId", "timeStamp" });
+				config.getEntityType().toLowerCase() + "PerformanceData.csv",
+				new String[] { "entityId", "timeStamp" });
 		performanceDataWriter.initWriter(handler.getOutputTablesPath(), AdStatsWrapper.class);
-		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
-			this.campaignsWriter = new DefaultBeanResultWriter<>("campaigns.csv", new String[] { "id" });
+		if (config.getEntityDatasets().contains(EntityDatasets.CAMPAIGN.name())
+				|| config.getEntityTypeEnum().equals(TwitterEntityType.CAMPAIGN)) {
+			this.campaignsWriter = new DefaultBeanResultWriter<>("campaigns.csv",
+					new String[] { "id" });
 			this.campaignsWriter.initWriter(handler.getOutputTablesPath(), CampaignWrapper.class);
 		}
-		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name()) || config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
-			this.lineItemWriter = new DefaultBeanResultWriter<>("lineItem.csv", new String[] { "id" });
+		if (config.getEntityDatasets().contains(EntityDatasets.LINE_ITEM.name())
+				|| config.getEntityTypeEnum().equals(TwitterEntityType.LINE_ITEM)) {
+			this.lineItemWriter = new DefaultBeanResultWriter<>("lineItem.csv",
+					new String[] { "id" });
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
 			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", null);
 			accountWriter.initWriter(handler.getOutputTablesPath(), AccountsWrapper.class);
 		}
-		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv", new String[] { "tweetId" });
+		if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
+			this.appCardWriter = new DefaultBeanResultWriter<>("app_download_cards.csv", null);
+			appCardWriter.initWriter(handler.getOutputTablesPath(), AppDownloadCardWrapper.class);
+		}
+		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
+				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
-		
+
 	}
 
 	@Override
@@ -330,7 +380,5 @@ public class TwitterAdsExRunner extends ComponentRunner{
 	protected long getTimeout() {
 		return TIMEOUT;
 	}
-
-
 
 }

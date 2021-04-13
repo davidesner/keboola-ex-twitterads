@@ -10,28 +10,28 @@ import com.google.gson.annotations.SerializedName;
 public class AbstractAppCard extends AbstractTwitterCard {
 
     @SerializedName("iphone_app_id")
-    private String iphoneAppId;
+	protected String iphoneAppId;
 
     @SerializedName("ipad_app_id")
-    private String ipadAppId;
+	protected String ipadAppId;
 
     @SerializedName("googleplay_app_id")
-    private String googleplayAppId;
+    protected String googleplayAppId;
 
     @SerializedName("iphone_deep_link")
-    private String iphoneDeepLink;
+    protected String iphoneDeepLink;
 
     @SerializedName("ipad_deep_link")
-    private String ipadDeepLink;
+    protected String ipadDeepLink;
 
     @SerializedName("googleplay_deep_link")
-    private String googleplayDeepLink;
+    protected String googleplayDeepLink;
 
     @SerializedName("country_code")
-    private String countryCode;
+    protected String countryCode;
 
     @SerializedName("app_cta")
-    private String appCta;
+    protected String appCta;
 
     public String getIphoneAppId() {
         return iphoneAppId;

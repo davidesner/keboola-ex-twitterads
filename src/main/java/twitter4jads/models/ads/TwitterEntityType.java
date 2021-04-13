@@ -10,5 +10,6 @@ public enum TwitterEntityType {
     CAMPAIGN,
     LINE_ITEM,
     PROMOTED_TWEET,
-    ORGANIC_TWEET
+    ORGANIC_TWEET,
+    APP_CARDS
 }

@@ -141,7 +141,8 @@ public class TwAdsConfigParams extends IKBCParameters {
 	public static enum EntityDatasets {
 		CAMPAIGN,
 		LINE_ITEM,
-		ACCOUNT;
+		ACCOUNT,
+		APP_CARDS;
 		
 		public static boolean isValid(String test) {
 			for (EntityDatasets c : EntityDatasets.values()) {
