@@ -30,6 +30,7 @@ import esnerda.keboola.ex.twitterads.config.TwitterAuthTokens;
 import esnerda.keboola.ex.twitterads.result.wrapper.AccountsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdStatsWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.AdsWrapperBuilder;
+import esnerda.keboola.ex.twitterads.result.wrapper.AppCardResultWriter;
 import esnerda.keboola.ex.twitterads.result.wrapper.AppDownloadCardWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.LineItemWrapper;
@@ -362,10 +363,10 @@ public class TwitterAdsExRunner extends ComponentRunner {
 			accountWriter.initWriter(handler.getOutputTablesPath(), AccountsWrapper.class);
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
-			this.appCardWriter = new DefaultBeanResultWriter<>("app_download_cards.csv", null);
+			this.appCardWriter = new AppCardResultWriter("app_download_cards.csv", null);
 			appCardWriter.initWriter(handler.getOutputTablesPath(), AppDownloadCardWrapper.class);
 		}
-		
+
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
