@@ -1,27 +1,22 @@
 package esnerda.keboola.ex.twitterads.result.wrapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
 import twitter4jads.models.ads.cards.AbstractAppCard;
+import twitter4jads.models.ads.cards.TwitterCardType;
 import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
 import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
 
 /**
  * @author David Esner
  */
-public class AppDownloadCardWrapper extends AbstractAppCard {
+public class AppDownloadCardWrapper {
 
 	private String id;
-
-	public final static String[] COLUMNS = { "id", "cardType", "name", "accountId",
-			"twitterCardType", "previewUrl", "cardUri", "updatedAt", "createdAt", "deleted",
-			"iphoneAppId", "ipadAppId", "googleplayAppId", "iphoneDeepLink", "ipadDeepLink",
-			"googleplayDeepLink", "countryCode", "appCta", "channelVideoId", "channelVideoUrl",
-			"channelVideoLength", "channelImageId", "posterVideoUrl", "wideAppImage",
-			"wideAppImageData" };
 
 	public String getId() {
 		return id;
@@ -54,6 +49,38 @@ public class AppDownloadCardWrapper extends AbstractAppCard {
 
 	private String cardType;
 
+	private String name;
+
+	private String accountId;
+
+	private TwitterCardType twitterCardType;
+
+	private String previewUrl;
+
+	private String cardUri;
+
+	private Date updatedAt;
+
+	private Date createdAt;
+
+	private boolean deleted;
+
+	private String iphoneAppId;
+
+	private String googleplayAppId;
+
+	private String ipadDeepLink;
+
+	private String googleplayDeepLink;
+
+	private String countryCode;
+
+	private String appCta;
+
+	private String iphoneDeepLink;
+
+	private String ipadAppId;
+
 	public AppDownloadCardWrapper() {
 	}
 
@@ -77,9 +104,19 @@ public class AppDownloadCardWrapper extends AbstractAppCard {
 		this.channelVideoLength = channelVideoLength;
 		this.channelImageId = channelImageId;
 		this.posterVideoUrl = posterVideoUrl;
+
 	}
 
 	public AppDownloadCardWrapper(AbstractAppCard camp, String accountId) {
+		this.id = camp.getId();
+		this.name = camp.getName();
+		this.accountId = camp.getAccountId();
+		this.twitterCardType = camp.getTwitterCardType();
+		this.previewUrl = camp.getPreviewUrl();
+		this.cardUri = camp.getCardUri();
+		this.updatedAt = camp.getUpdatedAt();
+		this.createdAt = camp.getCreatedAt();
+		this.deleted = camp.getDeleted();
 		this.iphoneAppId = camp.getIphoneAppId();
 		this.ipadAppId = camp.getIpadAppId();
 		this.googleplayAppId = camp.getGoogleplayAppId();
@@ -88,7 +125,7 @@ public class AppDownloadCardWrapper extends AbstractAppCard {
 		this.googleplayDeepLink = camp.getGoogleplayDeepLink();
 		this.countryCode = camp.getCountryCode();
 		this.appCta = camp.getAppCta();
-		this.id = camp.getId();
+
 		if (camp instanceof TwitterVideoAppDownloadCard) {
 			this.channelVideoId = ((TwitterVideoAppDownloadCard) camp).getChannelVideoId();
 			this.channelVideoUrl = ((TwitterVideoAppDownloadCard) camp).getChannelVideoUrl();
@@ -135,6 +172,70 @@ public class AppDownloadCardWrapper extends AbstractAppCard {
 
 	public String getCardType() {
 		return cardType;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public TwitterCardType getTwitterCardType() {
+		return twitterCardType;
+	}
+
+	public String getPreviewUrl() {
+		return previewUrl;
+	}
+
+	public String getCardUri() {
+		return cardUri;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public String getIphoneAppId() {
+		return iphoneAppId;
+	}
+
+	public String getGoogleplayAppId() {
+		return googleplayAppId;
+	}
+
+	public String getIpadDeepLink() {
+		return ipadDeepLink;
+	}
+
+	public String getGoogleplayDeepLink() {
+		return googleplayDeepLink;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public String getAppCta() {
+		return appCta;
+	}
+
+	public String getIphoneDeepLink() {
+		return iphoneDeepLink;
+	}
+
+	public String getIpadAppId() {
+		return ipadAppId;
 	}
 
 	public static class Builder<T extends AbstractAppCard> {
