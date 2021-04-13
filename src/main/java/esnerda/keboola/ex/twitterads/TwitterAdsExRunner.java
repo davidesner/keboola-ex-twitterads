@@ -365,6 +365,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 			this.appCardWriter = new DefaultBeanResultWriter<>("app_download_cards.csv", null);
 			appCardWriter.initWriter(handler.getOutputTablesPath(), AppDownloadCardWrapper.class);
 		}
+		
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
