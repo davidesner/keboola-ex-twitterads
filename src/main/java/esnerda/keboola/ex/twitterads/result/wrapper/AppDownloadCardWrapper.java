@@ -98,6 +98,38 @@ public class AppDownloadCardWrapper extends AbstractAppCard {
 		}
 	}
 
+	public String getChannelVideoId() {
+		return channelVideoId;
+	}
+
+	public String getChannelVideoUrl() {
+		return channelVideoUrl;
+	}
+
+	public String getChannelVideoLength() {
+		return channelVideoLength;
+	}
+
+	public String getChannelImageId() {
+		return channelImageId;
+	}
+
+	public String getPosterVideoUrl() {
+		return posterVideoUrl;
+	}
+
+	public String getWideAppImage() {
+		return wideAppImage;
+	}
+
+	public String getWideAppImageData() {
+		return wideAppImageData;
+	}
+
+	public String getCardType() {
+		return cardType;
+	}
+
 	public static class Builder<T extends AbstractAppCard> {
 		public static <T extends AbstractAppCard> List<AppDownloadCardWrapper> build(List<T> cards,
 				String accountId) {
