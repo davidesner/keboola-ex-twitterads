@@ -23,6 +23,7 @@ import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedTweetsSortByField;
+import twitter4jads.models.media.TwitterAccountMediaCreative;
 import twitter4jads.util.TwitterAdUtil;
 
 /**
@@ -57,6 +58,10 @@ public class TwitterAdsApiService {
 	
 	public List<LineItem> getLineItems(String accountId, boolean includeDeleted, LineItemsSortByField sortBy) throws TwitterException {
 		return client.getLineItems(accountId, includeDeleted, sortBy);
+	}
+	
+	public List<TwitterAccountMediaCreative> getMediaCreatives(String accountId, boolean includeDeleted) throws TwitterException {
+		return client.getMediaCreatives(accountId, includeDeleted);
 	}
 
 	public List<PromotedTweets> getPromotedTweets(String accountId, boolean includeDeleted, PromotedTweetsSortByField sortBy) throws TwitterException {

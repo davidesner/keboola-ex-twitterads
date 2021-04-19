@@ -4,13 +4,13 @@
 	"type": "object",
 	"properties": {
 		"accountNames": {
-		"propertyOrder": 5000,
+			"propertyOrder": 5000,
 			"type": "array",
 			"title": "Twitter account names",
 			"uniqueItems": true,
 			"format": "table",
 			"description": "Twitter account names as found in Twitter UI",
-			"items": {				
+			"items": {
 				"title": "Account name",
 				"type": "string"
 			}
@@ -28,13 +28,15 @@
 			"type": "string",
 			"enum": [
 				"CAMPAIGN",
-				"LINE_ITEM"
+				"LINE_ITEM",
+				"MEDIA_CREATIVE"
 			],
 			"default": "CAMPAIGN",
 			"options": {
 				"enum_titles": [
 					"Campaign",
-					"Line item"
+					"Line item",
+					"Media Creative"
 				]
 			}
 		},
@@ -76,7 +78,8 @@
 					"CAMPAIGN",
 					"LINE_ITEM",
 					"ACCOUNT",
-					"APP_CARDS"
+					"APP_CARDS",
+					"MEDIA_CREATIVE"
 				],
 				"default": "CAMPAIGN",
 				"options": {
@@ -84,7 +87,8 @@
 						"Campaign",
 						"LineItem",
 						"Account",
-						"App Download Cards"
+						"App Download Cards",
+						"Media Creative"
 					]
 				}
 			}
@@ -124,7 +128,7 @@
 			}
 		}
 	},
-	"required": [	
+	"required": [
 		"accountNames",
 		"since",
 		"entityType",

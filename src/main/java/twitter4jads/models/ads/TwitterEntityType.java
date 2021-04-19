@@ -11,5 +11,6 @@ public enum TwitterEntityType {
     LINE_ITEM,
     PROMOTED_TWEET,
     ORGANIC_TWEET,
+    MEDIA_CREATIVE,
     APP_CARDS
 }
