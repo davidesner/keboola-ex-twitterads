@@ -33,6 +33,7 @@ import esnerda.keboola.ex.twitterads.result.wrapper.AdsWrapperBuilder;
 import esnerda.keboola.ex.twitterads.result.wrapper.AppDownloadCardWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.LineItemWrapper;
+import esnerda.keboola.ex.twitterads.result.wrapper.MediaCreativeWrapper;
 import esnerda.keboola.ex.twitterads.util.CsvUtil;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiClient;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiService;
@@ -55,6 +56,7 @@ import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedTweetsSortByField;
+import twitter4jads.models.media.TwitterAccountMediaCreative;
 
 /**
  * @author David Esner
@@ -73,6 +75,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 	private static IResultWriter<AdStatsWrapper> performanceDataWriter;
 	private static IResultWriter<CampaignWrapper> campaignsWriter;
 	private static IResultWriter<LineItemWrapper> lineItemWriter;
+	private static IResultWriter<MediaCreativeWrapper> mediaCreativeWriter;
 	private static IResultWriter<AppDownloadCardWrapper> appCardWriter;
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
@@ -100,6 +103,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		startTimer();
 		List<Campaign> campaigns = Collections.emptyList();
 		List<LineItem> lineItems = Collections.emptyList();
+		List<TwitterAccountMediaCreative> mediaCreatives = Collections.emptyList();
 		AdsStatsAsyncRequestBuilder builder = new AdsStatsAsyncRequestBuilder();
 
 		try {
@@ -148,6 +152,14 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					lineItemWriter
 							.writeAllResults(LineItemWrapper.Builder.build(lineItems, accountId));
 				}
+				
+				if (config.getEntityDatasets().contains(EntityDatasets.MEDIA_CREATIVE.name())
+						|| config.getEntityTypeEnum().equals(TwitterEntityType.MEDIA_CREATIVE)) {
+					mediaCreatives = apiService.getMediaCreatives(accountId, config.getIncludeDeleted());
+					mediaCreativeWriter
+					.writeAllResults(MediaCreativeWrapper.Builder.build(mediaCreatives, accountId));
+				}
+				
 				if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
 					List<TwitterVideoAppDownloadCard> videoCards = apiService
 							.getVideoAppDownloadCards(accountId, config.getIncludeDeleted());
@@ -173,6 +185,11 @@ public class TwitterAdsExRunner extends ComponentRunner {
 							apiService.filterRecentlyUpdatedCampaigns(campaigns, since));
 					break;
 				case LINE_ITEM:
+					reqEntityIds = getEntIds(
+							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
+					break;
+					
+				case MEDIA_CREATIVE:
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
@@ -275,6 +292,9 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		if (appCardWriter != null) {
 			allResults.addAll(appCardWriter.closeAndRetrieveMetadata());
 		}
+		if (mediaCreativeWriter != null) {
+			allResults.addAll(mediaCreativeWriter.closeAndRetrieveMetadata());
+		}
 
 		return allResults;
 	}
@@ -356,6 +376,13 @@ public class TwitterAdsExRunner extends ComponentRunner {
 			this.lineItemWriter = new DefaultBeanResultWriter<>("lineItem.csv",
 					new String[] { "id" });
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
+		}
+		
+		if (config.getEntityDatasets().contains(EntityDatasets.MEDIA_CREATIVE.name())
+				|| config.getEntityTypeEnum().equals(TwitterEntityType.MEDIA_CREATIVE)) {
+			this.mediaCreativeWriter = new DefaultBeanResultWriter<>("mediaCreative.csv",
+					new String[] { "id" });
+			mediaCreativeWriter.initWriter(handler.getOutputTablesPath(), MediaCreativeWrapper.class);
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
 			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", null);

@@ -13,6 +13,7 @@ import twitter4jads.api.TwitterAdsAccountApi;
 import twitter4jads.api.TwitterAdsCampaignApi;
 import twitter4jads.api.TwitterAdsCardsApi;
 import twitter4jads.api.TwitterAdsLineItemApi;
+import twitter4jads.api.TwitterAdsMediaApi;
 import twitter4jads.api.TwitterAdsPromotedTweetApi;
 import twitter4jads.api.TwitterAdsStatApi;
 import twitter4jads.conf.ConfigurationBuilder;
@@ -28,6 +29,7 @@ import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedTweetsSortByField;
+import twitter4jads.models.media.TwitterAccountMediaCreative;
 
 /**
  * @author David Esner
@@ -66,6 +68,16 @@ public class TwitterAdsApiClient {
 				com.google.common.base.Optional.fromNullable(sortBy));
 
 		return transformListResponseToList(allCampaigns);
+	}
+
+	public List<TwitterAccountMediaCreative> getMediaCreatives(String accountId,
+			boolean withDeleted) throws TwitterException {
+		TwitterAdsMediaApi mediaApi = clientInstance.getPromotedApi();
+
+		BaseAdsListResponseIterable<TwitterAccountMediaCreative> allCreatives = mediaApi
+				.getMediaCreativesForAccount(accountId, withDeleted);
+
+		return transformListResponseToList(allCreatives);
 	}
 
 	public List<LineItem> getLineItems(String accountId, boolean withDeleted,
