@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
 
 import twitter4jads.BaseAdsListResponse;
@@ -42,14 +43,16 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, String userId, boolean withDeleted, Integer count, String cursor)
+    public BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, Optional<String> userId, boolean withDeleted, Integer count, String cursor)
             throws TwitterException {
 
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         // TwitterAdUtil.ensureNotNull(userId, "userId");
 
         final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_USER_ID, userId));
+        if (userId != null && userId.isPresent()) {
+        	params.add(new HttpParameter(PARAM_USER_ID, userId.get()));
+        }
         if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
             params.add(new HttpParameter(PARAM_CURSOR, cursor));
         }

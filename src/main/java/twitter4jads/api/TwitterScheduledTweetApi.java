@@ -1,12 +1,14 @@
 package twitter4jads.api;
 
+import java.util.Date;
+import java.util.List;
+
+import com.google.common.base.Optional;
+
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ScheduledTweet;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * User: abhishekanand
@@ -22,7 +24,7 @@ public interface TwitterScheduledTweetApi {
      * @param cursor Specifies a cursor to get the next page of Scheduled Promoted Tweets.
      */
 
-    BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, String userId, boolean withDeleted, Integer count, String cursor)
+    BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, Optional<String> userId, boolean withDeleted, Integer count, String cursor)
             throws TwitterException;
 
 
