@@ -11,6 +11,7 @@ import esnerda.keboola.components.logging.KBCLogger;
 import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequest;
 import twitter4jads.BaseAdsListResponse;
 import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.AdAccount;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
@@ -66,6 +67,10 @@ public class TwitterAdsApiService {
 
 	public List<PromotedTweets> getPromotedTweets(String accountId, boolean includeDeleted, PromotedTweetsSortByField sortBy) throws TwitterException {
 		return client.getPromotedTweets(accountId, includeDeleted, sortBy);
+	}
+	
+	public List<ScheduledTweet> getScheduleddTweets(String accountId, boolean includeDeleted) throws TwitterException {
+		return client.getScheduledTweets(accountId, includeDeleted);
 	}
 
 	public List<AdAccount> getAccountsByNames(List<String> accountNames, boolean includeDeleted) throws TwitterException {

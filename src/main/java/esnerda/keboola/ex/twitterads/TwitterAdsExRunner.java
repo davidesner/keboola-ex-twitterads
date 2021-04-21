@@ -43,6 +43,7 @@ import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequestBuilder;
 import esnerda.keboola.ex.twitterads.ws.request.AsyncAdsRequestChunk;
 import esnerda.keboola.ex.twitterads.ws.response.AdStatsResponseWrapper;
 import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.AdAccount;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
@@ -79,6 +80,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 	private static IResultWriter<AppDownloadCardWrapper> appCardWriter;
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
+	private static IResultWriter<ScheduledTweet> scheduledTweetsWriter;
 	private static IResultWriter<AccountsWrapper> accountWriter;
 
 	public TwitterAdsExRunner(String[] args) {
@@ -175,6 +177,9 @@ public class TwitterAdsExRunner extends ComponentRunner {
 				/* Get implicit entities */
 				promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId,
 						config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
+				
+				scheduledTweetsWriter.writeAllResults(apiService.getScheduleddTweets(accountId,
+						config.getIncludeDeleted()));
 
 				// retrieve data only for recently updated
 				log.info("Geting data since: " + since.toString());
@@ -286,6 +291,9 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		if (promotedTweetsWriter != null) {
 			allResults.addAll(promotedTweetsWriter.closeAndRetrieveMetadata());
 		}
+		if (scheduledTweetsWriter != null) {
+			allResults.addAll(scheduledTweetsWriter.closeAndRetrieveMetadata());
+		}
 		if (accountWriter != null) {
 			allResults.addAll(accountWriter.closeAndRetrieveMetadata());
 		}
@@ -395,6 +403,10 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
+		
+		this.scheduledTweetsWriter = new DefaultBeanResultWriter<>("scheduledTweets.csv",
+				new String[] { "tweetId" });
+		this.scheduledTweetsWriter.initWriter(handler.getOutputTablesPath(), ScheduledTweet.class);
 
 	}
 

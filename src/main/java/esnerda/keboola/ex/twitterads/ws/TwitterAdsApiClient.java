@@ -16,8 +16,10 @@ import twitter4jads.api.TwitterAdsLineItemApi;
 import twitter4jads.api.TwitterAdsMediaApi;
 import twitter4jads.api.TwitterAdsPromotedTweetApi;
 import twitter4jads.api.TwitterAdsStatApi;
+import twitter4jads.api.TwitterScheduledTweetApi;
 import twitter4jads.conf.ConfigurationBuilder;
 import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.AdAccount;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
@@ -117,6 +119,13 @@ public class TwitterAdsApiClient {
 				.getAllPromotedTweets(accountId, withDeleted, null, null, null,
 						com.google.common.base.Optional.fromNullable(sortBy));
 
+		return transformListResponseToList(promotedTweets);
+	}
+	
+	public List<ScheduledTweet> getScheduledTweets(String accountId, boolean withDeleted) throws TwitterException {
+		TwitterScheduledTweetApi scheduledTwApi = clientInstance.getScheduledTweetApi();
+		BaseAdsListResponseIterable<ScheduledTweet> promotedTweets = scheduledTwApi.fetch(accountId, null, withDeleted, null, null);
+		
 		return transformListResponseToList(promotedTweets);
 	}
 
