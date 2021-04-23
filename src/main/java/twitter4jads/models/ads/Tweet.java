@@ -1,5 +1,6 @@
 package twitter4jads.models.ads;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import twitter4jads.internal.models4j.TwitterEntities;
 /**
  * User: prashant Date: 19/05/16. Time: 9:54 PM
  */
-public class Tweet extends TwitterEntity {
+public class Tweet extends TwitterEntity  implements Serializable{
 
 	@SerializedName("tweet_id")
 	private String tweetId;
