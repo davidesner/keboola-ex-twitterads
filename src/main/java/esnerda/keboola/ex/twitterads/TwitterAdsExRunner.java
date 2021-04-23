@@ -177,15 +177,20 @@ public class TwitterAdsExRunner extends ComponentRunner {
 							AppDownloadCardWrapper.Builder.build(imageCards, accountId));
 				}
 
+				if (config.getEntityDatasets().contains(EntityDatasets.SCHEDULED_TWEETS.name())) {
+					scheduledTweetsWriter.writeAllResults(
+							apiService.getScheduleddTweets(accountId, config.getIncludeDeleted()));
+				}
+
+				if (config.getEntityDatasets().contains(EntityDatasets.PUBLISHED_TWEETS.name())) {
+					tweetsWriter.writeAllResults(TweetWrapper.Builder
+							.build(apiService.getPublishedTweets(accountId), accountId));
+				}
+
 				/* Get implicit entities */
 				promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId,
 						config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
 
-				scheduledTweetsWriter.writeAllResults(
-						apiService.getScheduleddTweets(accountId, config.getIncludeDeleted()));
-
-				tweetsWriter.writeAllResults(TweetWrapper.Builder
-						.build(apiService.getPublishedTweets(accountId), accountId));
 
 				// retrieve data only for recently updated
 				log.info("Geting data since: " + since.toString());
@@ -413,14 +418,19 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
+		
+		if (config.getEntityDatasets().contains(EntityDatasets.SCHEDULED_TWEETS.name())) {
+			this.scheduledTweetsWriter = new DefaultBeanResultWriter<>("scheduledTweets.csv",
+					new String[] { "tweetId" });
 
-		this.scheduledTweetsWriter = new DefaultBeanResultWriter<>("scheduledTweets.csv",
-				new String[] { "tweetId" });
-		this.scheduledTweetsWriter.initWriter(handler.getOutputTablesPath(), ScheduledTweet.class);
-
-		this.tweetsWriter = new DefaultBeanResultWriter<>("published_tweets.csv",
-				new String[] { "tweetId" });
-		this.tweetsWriter.initWriter(handler.getOutputTablesPath(), TweetWrapper.class);
+			this.scheduledTweetsWriter.initWriter(handler.getOutputTablesPath(),
+					ScheduledTweet.class);
+		}
+		if (config.getEntityDatasets().contains(EntityDatasets.PUBLISHED_TWEETS.name())) {
+			this.tweetsWriter = new DefaultBeanResultWriter<>("published_tweets.csv",
+					new String[] { "tweetId" });
+			this.tweetsWriter.initWriter(handler.getOutputTablesPath(), TweetWrapper.class);
+		}
 
 	}
 

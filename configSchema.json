@@ -79,7 +79,9 @@
 					"LINE_ITEM",
 					"ACCOUNT",
 					"APP_CARDS",
-					"MEDIA_CREATIVE"
+					"MEDIA_CREATIVE",
+					"SCHEDULED_TWEETS",
+					"PUBLISHED_TWEETS"
 				],
 				"default": "CAMPAIGN",
 				"options": {
@@ -88,7 +90,9 @@
 						"LineItem",
 						"Account",
 						"App Download Cards",
-						"Media Creative"
+						"Media Creative",
+						"Scheduled Tweets",
+						"Published Tweets"
 					]
 				}
 			}

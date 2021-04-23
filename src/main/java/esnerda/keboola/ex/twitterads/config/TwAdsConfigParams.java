@@ -143,7 +143,9 @@ public class TwAdsConfigParams extends IKBCParameters {
 		LINE_ITEM,
 		ACCOUNT,
 		APP_CARDS,
-		MEDIA_CREATIVE;
+		MEDIA_CREATIVE,
+		SCHEDULED_TWEETS,
+		PUBLISHED_TWEETS;
 		
 		public static boolean isValid(String test) {
 			for (EntityDatasets c : EntityDatasets.values()) {
