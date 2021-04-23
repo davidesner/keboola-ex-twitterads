@@ -163,6 +163,140 @@ public class TweetWrapper {
 				.collect(Collectors.joining(","));
 		this.retweeted = obj.getRetweeted();
 	}
+	
+	
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public String getTweetId() {
+		return tweetId;
+	}
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public String getIdStr() {
+		return idStr;
+	}
+
+	public String getInReplyToUserIdStr() {
+		return inReplyToUserIdStr;
+	}
+
+	public String getInReplyToScreenName() {
+		return inReplyToScreenName;
+	}
+
+	public List<Long> getContributors() {
+		return contributors;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public String getFullText() {
+		return fullText;
+	}
+
+	public String getTweetType() {
+		return tweetType;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public String getCardUri() {
+		return cardUri;
+	}
+
+	public boolean isTruncated() {
+		return truncated;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public String getConversationSettings() {
+		return conversationSettings;
+	}
+
+	public boolean isFavourited() {
+		return favourited;
+	}
+
+	public Boolean getNullcast() {
+		return nullcast;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public String getScheduledAt() {
+		return scheduledAt;
+	}
+
+	public PlaceJSONImpl getPlace() {
+		return place;
+	}
+
+	public Long getInReplyToStatusId() {
+		return inReplyToStatusId;
+	}
+
+	public Integer getRetweetCount() {
+		return retweetCount;
+	}
+
+	public Integer getFavoriteCount() {
+		return favoriteCount;
+	}
+
+	public Long getInReplyToUserId() {
+		return inReplyToUserId;
+	}
+
+	public Boolean getScopeFollowers() {
+		return scopeFollowers;
+	}
+
+	public GeoLocation getGeo() {
+		return geo;
+	}
+
+	public String getInReplyToStatusIdStr() {
+		return inReplyToStatusIdStr;
+	}
+
+	public String getDisplayTextRange() {
+		return displayTextRange;
+	}
+
+	public Boolean getRetweeted() {
+		return retweeted;
+	}
+
+	public String getUserMentions() {
+		return userMentions;
+	}
+
+	public String getHashTags() {
+		return hashTags;
+	}
+
+	public String getUrls() {
+		return urls;
+	}
+
 
 	public static class Builder {
 		public static List<TweetWrapper> build(List<Tweet> campaigns, String accountId) {
