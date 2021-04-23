@@ -49,6 +49,7 @@ import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
 import twitter4jads.models.ads.LineItem;
 import twitter4jads.models.ads.PromotedTweets;
+import twitter4jads.models.ads.Tweet;
 import twitter4jads.models.ads.TwitterAsyncQueryStatus;
 import twitter4jads.models.ads.TwitterEntity;
 import twitter4jads.models.ads.TwitterEntityType;
@@ -81,6 +82,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
 	private static IResultWriter<ScheduledTweet> scheduledTweetsWriter;
+	private static IResultWriter<Tweet> tweetsWriter;
 	private static IResultWriter<AccountsWrapper> accountWriter;
 
 	public TwitterAdsExRunner(String[] args) {
@@ -154,14 +156,15 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					lineItemWriter
 							.writeAllResults(LineItemWrapper.Builder.build(lineItems, accountId));
 				}
-				
+
 				if (config.getEntityDatasets().contains(EntityDatasets.MEDIA_CREATIVE.name())
 						|| config.getEntityTypeEnum().equals(TwitterEntityType.MEDIA_CREATIVE)) {
-					mediaCreatives = apiService.getMediaCreatives(accountId, config.getIncludeDeleted());
-					mediaCreativeWriter
-					.writeAllResults(MediaCreativeWrapper.Builder.build(mediaCreatives, accountId));
+					mediaCreatives = apiService.getMediaCreatives(accountId,
+							config.getIncludeDeleted());
+					mediaCreativeWriter.writeAllResults(
+							MediaCreativeWrapper.Builder.build(mediaCreatives, accountId));
 				}
-				
+
 				if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
 					List<TwitterVideoAppDownloadCard> videoCards = apiService
 							.getVideoAppDownloadCards(accountId, config.getIncludeDeleted());
@@ -177,9 +180,11 @@ public class TwitterAdsExRunner extends ComponentRunner {
 				/* Get implicit entities */
 				promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId,
 						config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
-				
-				scheduledTweetsWriter.writeAllResults(apiService.getScheduleddTweets(accountId,
-						config.getIncludeDeleted()));
+
+				scheduledTweetsWriter.writeAllResults(
+						apiService.getScheduleddTweets(accountId, config.getIncludeDeleted()));
+
+				tweetsWriter.writeAllResults(apiService.getPublishedTweets(accountId));
 
 				// retrieve data only for recently updated
 				log.info("Geting data since: " + since.toString());
@@ -193,7 +198,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
-					
+
 				case MEDIA_CREATIVE:
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
@@ -294,6 +299,9 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		if (scheduledTweetsWriter != null) {
 			allResults.addAll(scheduledTweetsWriter.closeAndRetrieveMetadata());
 		}
+		if (tweetsWriter != null) {
+			allResults.addAll(tweetsWriter.closeAndRetrieveMetadata());
+		}
 		if (accountWriter != null) {
 			allResults.addAll(accountWriter.closeAndRetrieveMetadata());
 		}
@@ -385,12 +393,13 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					new String[] { "id" });
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
 		}
-		
+
 		if (config.getEntityDatasets().contains(EntityDatasets.MEDIA_CREATIVE.name())
 				|| config.getEntityTypeEnum().equals(TwitterEntityType.MEDIA_CREATIVE)) {
 			this.mediaCreativeWriter = new DefaultBeanResultWriter<>("mediaCreative.csv",
 					new String[] { "id" });
-			mediaCreativeWriter.initWriter(handler.getOutputTablesPath(), MediaCreativeWrapper.class);
+			mediaCreativeWriter.initWriter(handler.getOutputTablesPath(),
+					MediaCreativeWrapper.class);
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
 			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", null);
@@ -403,10 +412,14 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
-		
+
 		this.scheduledTweetsWriter = new DefaultBeanResultWriter<>("scheduledTweets.csv",
 				new String[] { "tweetId" });
 		this.scheduledTweetsWriter.initWriter(handler.getOutputTablesPath(), ScheduledTweet.class);
+
+		this.tweetsWriter = new DefaultBeanResultWriter<>("published_tweets.csv",
+				new String[] { "tweetId" });
+		this.tweetsWriter.initWriter(handler.getOutputTablesPath(), Tweet.class);
 
 	}
 

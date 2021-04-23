@@ -16,6 +16,11 @@
 
 package twitter4jads.internal.json;
 
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getRawString;
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getUnescapedString;
+
+import java.util.Arrays;
+
 import twitter4jads.conf.Configuration;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.models4j.GeoLocation;
@@ -26,16 +31,11 @@ import twitter4jads.internal.org.json.JSONArray;
 import twitter4jads.internal.org.json.JSONException;
 import twitter4jads.internal.org.json.JSONObject;
 
-import java.util.Arrays;
-
-import static twitter4jads.internal.json.z_T4JInternalParseUtil.getRawString;
-import static twitter4jads.internal.json.z_T4JInternalParseUtil.getUnescapedString;
-
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.1
  */
-final class PlaceJSONImpl extends TwitterResponseImpl implements Place, java.io.Serializable {
+public final class PlaceJSONImpl extends TwitterResponseImpl implements Place, java.io.Serializable {
     private String name;
     private String streetAddress;
     private String countryCode;

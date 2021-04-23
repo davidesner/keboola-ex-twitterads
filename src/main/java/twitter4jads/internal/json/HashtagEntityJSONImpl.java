@@ -28,7 +28,7 @@ import twitter4jads.internal.org.json.JSONObject;
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.9
  */
-/*package*/ class HashtagEntityJSONImpl extends EntityIndex implements HashtagEntity {
+/*package*/ public class HashtagEntityJSONImpl extends EntityIndex implements HashtagEntity {
     private static final long serialVersionUID = 4068992372784813200L;
     private String text;
 

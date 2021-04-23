@@ -57,6 +57,7 @@ public interface TwitterAdsConstants {
     String PARAM_TWEET_IDS = "tweet_ids";
     String PARAM_TWEET_ID = "tweet_id";
     String PARAM_USER_ID = "user_id";
+    String PARAM_TWEET_TYPE = "tweet_type";
     String PARAM_AS_USER_ID = "as_user_id";
     String PARAM_SCOPED_TO = "scoped_to";
     String PARAM_SCHEDULED_AT = "scheduled_at";
@@ -287,6 +288,7 @@ public interface TwitterAdsConstants {
     String PATH_PROMOTED_TWEETS = "/promoted_tweets/";
     String PATH_SCHEDULED_TWEETS = "/scheduled_tweets/";
     String PATH_SCHEDULED_PROMOTED_TWEETS = "/scheduled_promoted_tweets/";
+    String PATH_TWEETS = "/tweets/";
     String PATH_PROMOTED_ACCOUNTS = "/promoted_accounts/";
     String PARAM_ATTRIBUTABLE_USER_ID = "attributable_user_id";
     String PATH_PROMOTABLE_USERS = "/promotable_users/";
