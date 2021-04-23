@@ -1,7 +1,6 @@
 package twitter4jads.models.ads;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
@@ -62,10 +61,10 @@ public class Tweet extends TwitterEntity  implements Serializable{
 	private Boolean nullcast;
 
 	@SerializedName("created_at")
-	private Date createdAt;
+	private String createdAt;
 
 	@SerializedName("scheduled_at")
-	private Date scheduledAt;
+	private String scheduledAt;
 
 	@SerializedName("place")
 	private PlaceJSONImpl place;
@@ -220,19 +219,19 @@ public class Tweet extends TwitterEntity  implements Serializable{
 		this.nullcast = nullcast;
 	}
 
-	public Date getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getScheduledAt() {
+	public String getScheduledAt() {
 		return scheduledAt;
 	}
 
-	public void setScheduledAt(Date scheduledAt) {
+	public void setScheduledAt(String scheduledAt) {
 		this.scheduledAt = scheduledAt;
 	}
 
