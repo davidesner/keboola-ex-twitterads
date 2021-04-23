@@ -13,7 +13,7 @@ import twitter4jads.internal.models4j.TwitterEntities;
 /**
  * User: prashant Date: 19/05/16. Time: 9:54 PM
  */
-public class Tweet extends TwitterEntity  implements Serializable{
+public class Tweet extends TwitterEntity implements Serializable {
 
 	@SerializedName("tweet_id")
 	private String tweetId;
@@ -44,6 +44,9 @@ public class Tweet extends TwitterEntity  implements Serializable{
 
 	@SerializedName("source")
 	private String source;
+
+	@SerializedName("card_uri")
+	private String cardUri;
 
 	@SerializedName("truncated")
 	private boolean truncated;
@@ -321,6 +324,14 @@ public class Tweet extends TwitterEntity  implements Serializable{
 
 	public void setRetweeted(Boolean retweeted) {
 		this.retweeted = retweeted;
+	}
+
+	public String getCardUri() {
+		return cardUri;
+	}
+
+	public void setCardUri(String cardUri) {
+		this.cardUri = cardUri;
 	}
 
 }

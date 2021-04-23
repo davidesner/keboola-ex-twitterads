@@ -34,6 +34,7 @@ import esnerda.keboola.ex.twitterads.result.wrapper.AppDownloadCardWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.LineItemWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.MediaCreativeWrapper;
+import esnerda.keboola.ex.twitterads.result.wrapper.TweetWrapper;
 import esnerda.keboola.ex.twitterads.util.CsvUtil;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiClient;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiService;
@@ -49,7 +50,6 @@ import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
 import twitter4jads.models.ads.LineItem;
 import twitter4jads.models.ads.PromotedTweets;
-import twitter4jads.models.ads.Tweet;
 import twitter4jads.models.ads.TwitterAsyncQueryStatus;
 import twitter4jads.models.ads.TwitterEntity;
 import twitter4jads.models.ads.TwitterEntityType;
@@ -82,7 +82,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
 	private static IResultWriter<ScheduledTweet> scheduledTweetsWriter;
-	private static IResultWriter<Tweet> tweetsWriter;
+	private static IResultWriter<TweetWrapper> tweetsWriter;
 	private static IResultWriter<AccountsWrapper> accountWriter;
 
 	public TwitterAdsExRunner(String[] args) {
@@ -184,7 +184,8 @@ public class TwitterAdsExRunner extends ComponentRunner {
 				scheduledTweetsWriter.writeAllResults(
 						apiService.getScheduleddTweets(accountId, config.getIncludeDeleted()));
 
-				tweetsWriter.writeAllResults(apiService.getPublishedTweets(accountId));
+				tweetsWriter.writeAllResults(TweetWrapper.Builder
+						.build(apiService.getPublishedTweets(accountId), accountId));
 
 				// retrieve data only for recently updated
 				log.info("Geting data since: " + since.toString());
@@ -419,7 +420,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 
 		this.tweetsWriter = new DefaultBeanResultWriter<>("published_tweets.csv",
 				new String[] { "tweetId" });
-		this.tweetsWriter.initWriter(handler.getOutputTablesPath(), Tweet.class);
+		this.tweetsWriter.initWriter(handler.getOutputTablesPath(), TweetWrapper.class);
 
 	}
 

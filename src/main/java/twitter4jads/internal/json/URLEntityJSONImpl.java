@@ -145,10 +145,10 @@ import twitter4jads.internal.org.json.JSONObject;
 
     @Override
     public String toString() {
-        return "URLEntityJSONImpl{" +
-                "url='" + url + '\'' +
-                ", expandedURL='" + expandedURL + '\'' +
-                ", displayURL='" + displayURL + '\'' +
+        return "{" +
+                "\"url:\"" + url + '"' +
+                ", \"expandedURL\":\"" + expandedURL + '"' +
+                ", \"displayURL=\"" + displayURL + '"' +
                 '}';
     }
 }

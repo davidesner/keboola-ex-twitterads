@@ -1,5 +1,9 @@
 package twitter4jads.internal.models4j;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.gson.annotations.SerializedName;
 
 import twitter4jads.internal.json.HashtagEntityJSONImpl;
@@ -43,6 +47,27 @@ public class TwitterEntities implements EntitySupport {
 	@Override
 	public MediaEntity[] getExtendedMediaEntities() {
 		return new MediaEntity[0];
+	}
+	
+	public String getUserMentionsAsString() {
+		return this.convertArrayToString(this.userMentionEntities);
+	}
+	
+	public String getHashtagAsString() {
+		return this.convertArrayToString(this.hashtagEntities);
+	}
+	
+	public String getUrlsAsString() {
+		return this.convertArrayToString(this.urlEntities);
+	}
+	
+	private String convertArrayToString(Object[] array) {
+		String result = "[";
+		List<String> names = Arrays.asList(array).stream().map(o -> o.toString()).collect(Collectors.toList());
+		result += names.stream().collect(Collectors.joining(","));
+		result += "]";
+		return result;
+		
 	}
 
 }

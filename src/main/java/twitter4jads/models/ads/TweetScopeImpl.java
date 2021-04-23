@@ -10,7 +10,7 @@ import twitter4jads.internal.models4j.TweetScope;
  */
 public class TweetScopeImpl implements TweetScope {
 
-	@SerializedName("tracking_partner")
+	@SerializedName("followers")
 	private Boolean followers;
 
 	public Boolean getFollowers() {

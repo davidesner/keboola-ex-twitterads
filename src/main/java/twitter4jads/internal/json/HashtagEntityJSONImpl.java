@@ -107,8 +107,6 @@ import twitter4jads.internal.org.json.JSONObject;
 
     @Override
     public String toString() {
-        return "HashtagEntityJSONImpl{" +
-                "text='" + text + '\'' +
-                '}';
+        return '"' + text + '"';
     }
 }
