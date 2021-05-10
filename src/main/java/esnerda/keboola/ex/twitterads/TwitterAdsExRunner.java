@@ -209,6 +209,11 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
+					
+				case PROMOTED_TWEET:
+					reqEntityIds = getEntIds(
+							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
+					break;
 
 				}
 				List<AsyncAdsRequestChunk> chunks = builder.buildAdRequestsChunks(

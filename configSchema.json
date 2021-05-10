@@ -29,14 +29,16 @@
 			"enum": [
 				"CAMPAIGN",
 				"LINE_ITEM",
-				"MEDIA_CREATIVE"
+				"MEDIA_CREATIVE",
+				"PROMOTED_TWEET"
 			],
 			"default": "CAMPAIGN",
 			"options": {
 				"enum_titles": [
 					"Campaign",
 					"Line item",
-					"Media Creative"
+					"Media Creative",
+					"Promoted Tweet"
 				]
 			}
 		},
