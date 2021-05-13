@@ -16,13 +16,17 @@ import twitter4jads.api.TwitterAdsLineItemApi;
 import twitter4jads.api.TwitterAdsMediaApi;
 import twitter4jads.api.TwitterAdsPromotedTweetApi;
 import twitter4jads.api.TwitterAdsStatApi;
+import twitter4jads.api.TwitterScheduledTweetApi;
+import twitter4jads.api.TwitterTweetApi;
 import twitter4jads.conf.ConfigurationBuilder;
 import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.AdAccount;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
 import twitter4jads.models.ads.LineItem;
 import twitter4jads.models.ads.PromotedTweets;
+import twitter4jads.models.ads.Tweet;
 import twitter4jads.models.ads.TwitterEntityStatistics;
 import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
 import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
@@ -118,6 +122,20 @@ public class TwitterAdsApiClient {
 						com.google.common.base.Optional.fromNullable(sortBy));
 
 		return transformListResponseToList(promotedTweets);
+	}
+	
+	public List<ScheduledTweet> getScheduledTweets(String accountId, boolean withDeleted) throws TwitterException {
+		TwitterScheduledTweetApi scheduledTwApi = clientInstance.getScheduledTweetApi();
+		BaseAdsListResponseIterable<ScheduledTweet> promotedTweets = scheduledTwApi.fetch(accountId, null, withDeleted, null, null);
+		
+		return transformListResponseToList(promotedTweets);
+	}
+	
+	public List<Tweet> getTweets(String accountId, String tweetType) throws TwitterException {
+		TwitterTweetApi tweetApi = clientInstance.getTweetsApi();
+		BaseAdsListResponseIterable<Tweet> tweets = tweetApi.getAll(accountId, tweetType, null, null);
+		
+		return transformListResponseToList(tweets);
 	}
 
 	public JobDetails submitAsyncStatsRequest(AdsStatsAsyncRequest req) throws TwitterException {

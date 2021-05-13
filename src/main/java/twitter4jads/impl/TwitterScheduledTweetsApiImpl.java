@@ -1,6 +1,23 @@
 package twitter4jads.impl;
 
+import static twitter4jads.TwitterAdsConstants.PARAM_CARD_URI;
+import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
+import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_NULLCAST;
+import static twitter4jads.TwitterAdsConstants.PARAM_SCHEDULED_AT;
+import static twitter4jads.TwitterAdsConstants.PARAM_TEXT;
+import static twitter4jads.TwitterAdsConstants.PARAM_USER_ID;
+import static twitter4jads.TwitterAdsConstants.PATH_SCHEDULED_TWEETS;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
+
 import twitter4jads.BaseAdsListResponse;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
@@ -12,21 +29,6 @@ import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.HttpVerb;
 import twitter4jads.util.TwitterAdUtil;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static twitter4jads.TwitterAdsConstants.PARAM_CARD_URI;
-import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_NULLCAST;
-import static twitter4jads.TwitterAdsConstants.PARAM_SCHEDULED_AT;
-import static twitter4jads.TwitterAdsConstants.PARAM_TEXT;
-import static twitter4jads.TwitterAdsConstants.PARAM_USER_ID;
-import static twitter4jads.TwitterAdsConstants.PATH_SCHEDULED_TWEETS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
 
 /**
  * User: abhishekanand
@@ -41,14 +43,16 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, String userId, boolean withDeleted, Integer count, String cursor)
+    public BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, Optional<String> userId, boolean withDeleted, Integer count, String cursor)
             throws TwitterException {
 
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        TwitterAdUtil.ensureNotNull(userId, "userId");
+        // TwitterAdUtil.ensureNotNull(userId, "userId");
 
         final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_USER_ID, userId));
+        if (userId != null && userId.isPresent()) {
+        	params.add(new HttpParameter(PARAM_USER_ID, userId.get()));
+        }
         if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
             params.add(new HttpParameter(PARAM_CURSOR, cursor));
         }

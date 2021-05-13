@@ -136,10 +136,10 @@ public class UserMentionEntityJSONImpl extends EntityIndex implements UserMentio
 
     @Override
     public String toString() {
-        return "UserMentionEntityJSONImpl{" +
-                "name='" + name + '\'' +
-                ", screenName='" + screenName + '\'' +
-                ", id=" + id +
+        return "{" +
+                "name:\"" + name + '\"' +
+                ", screenName:\"" + screenName + '\"' +
+                ", id:" + id +
                 '}';
     }
 }

@@ -28,7 +28,7 @@ import twitter4jads.internal.org.json.JSONObject;
  * @author Mocel - mocel at guma.jp
  * @since Twitter4J 2.1.9
  */
-/* package */ final class URLEntityJSONImpl extends EntityIndex implements URLEntity {
+/* package */ public class URLEntityJSONImpl extends EntityIndex implements URLEntity {
 
     private static final long serialVersionUID = -8948472760821379376L;
     private String url;
@@ -145,10 +145,10 @@ import twitter4jads.internal.org.json.JSONObject;
 
     @Override
     public String toString() {
-        return "URLEntityJSONImpl{" +
-                "url='" + url + '\'' +
-                ", expandedURL='" + expandedURL + '\'' +
-                ", displayURL='" + displayURL + '\'' +
+        return "{" +
+                "\"url:\"" + url + '"' +
+                ", \"expandedURL\":\"" + expandedURL + '"' +
+                ", \"displayURL=\"" + displayURL + '"' +
                 '}';
     }
 }

@@ -34,6 +34,7 @@ import esnerda.keboola.ex.twitterads.result.wrapper.AppDownloadCardWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.CampaignWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.LineItemWrapper;
 import esnerda.keboola.ex.twitterads.result.wrapper.MediaCreativeWrapper;
+import esnerda.keboola.ex.twitterads.result.wrapper.TweetWrapper;
 import esnerda.keboola.ex.twitterads.util.CsvUtil;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiClient;
 import esnerda.keboola.ex.twitterads.ws.TwitterAdsApiService;
@@ -43,6 +44,7 @@ import esnerda.keboola.ex.twitterads.ws.request.AdsStatsAsyncRequestBuilder;
 import esnerda.keboola.ex.twitterads.ws.request.AsyncAdsRequestChunk;
 import esnerda.keboola.ex.twitterads.ws.response.AdStatsResponseWrapper;
 import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.AdAccount;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.JobDetails;
@@ -79,6 +81,8 @@ public class TwitterAdsExRunner extends ComponentRunner {
 	private static IResultWriter<AppDownloadCardWrapper> appCardWriter;
 	/* Entity writers */
 	private static IResultWriter<PromotedTweets> promotedTweetsWriter;
+	private static IResultWriter<ScheduledTweet> scheduledTweetsWriter;
+	private static IResultWriter<TweetWrapper> tweetsWriter;
 	private static IResultWriter<AccountsWrapper> accountWriter;
 
 	public TwitterAdsExRunner(String[] args) {
@@ -152,14 +156,15 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					lineItemWriter
 							.writeAllResults(LineItemWrapper.Builder.build(lineItems, accountId));
 				}
-				
+
 				if (config.getEntityDatasets().contains(EntityDatasets.MEDIA_CREATIVE.name())
 						|| config.getEntityTypeEnum().equals(TwitterEntityType.MEDIA_CREATIVE)) {
-					mediaCreatives = apiService.getMediaCreatives(accountId, config.getIncludeDeleted());
-					mediaCreativeWriter
-					.writeAllResults(MediaCreativeWrapper.Builder.build(mediaCreatives, accountId));
+					mediaCreatives = apiService.getMediaCreatives(accountId,
+							config.getIncludeDeleted());
+					mediaCreativeWriter.writeAllResults(
+							MediaCreativeWrapper.Builder.build(mediaCreatives, accountId));
 				}
-				
+
 				if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
 					List<TwitterVideoAppDownloadCard> videoCards = apiService
 							.getVideoAppDownloadCards(accountId, config.getIncludeDeleted());
@@ -172,9 +177,20 @@ public class TwitterAdsExRunner extends ComponentRunner {
 							AppDownloadCardWrapper.Builder.build(imageCards, accountId));
 				}
 
+				if (config.getEntityDatasets().contains(EntityDatasets.SCHEDULED_TWEETS.name())) {
+					scheduledTweetsWriter.writeAllResults(
+							apiService.getScheduleddTweets(accountId, config.getIncludeDeleted()));
+				}
+
+				if (config.getEntityDatasets().contains(EntityDatasets.PUBLISHED_TWEETS.name())) {
+					tweetsWriter.writeAllResults(TweetWrapper.Builder
+							.build(apiService.getPublishedTweets(accountId), accountId));
+				}
+
 				/* Get implicit entities */
 				promotedTweetsWriter.writeAllResults(apiService.getPromotedTweets(accountId,
 						config.getIncludeDeleted(), PromotedTweetsSortByField.UPDATED_AT_DESC));
+
 
 				// retrieve data only for recently updated
 				log.info("Geting data since: " + since.toString());
@@ -188,8 +204,13 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
-					
+
 				case MEDIA_CREATIVE:
+					reqEntityIds = getEntIds(
+							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
+					break;
+					
+				case PROMOTED_TWEET:
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
@@ -286,6 +307,12 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		if (promotedTweetsWriter != null) {
 			allResults.addAll(promotedTweetsWriter.closeAndRetrieveMetadata());
 		}
+		if (scheduledTweetsWriter != null) {
+			allResults.addAll(scheduledTweetsWriter.closeAndRetrieveMetadata());
+		}
+		if (tweetsWriter != null) {
+			allResults.addAll(tweetsWriter.closeAndRetrieveMetadata());
+		}
 		if (accountWriter != null) {
 			allResults.addAll(accountWriter.closeAndRetrieveMetadata());
 		}
@@ -377,12 +404,13 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					new String[] { "id" });
 			lineItemWriter.initWriter(handler.getOutputTablesPath(), LineItemWrapper.class);
 		}
-		
+
 		if (config.getEntityDatasets().contains(EntityDatasets.MEDIA_CREATIVE.name())
 				|| config.getEntityTypeEnum().equals(TwitterEntityType.MEDIA_CREATIVE)) {
 			this.mediaCreativeWriter = new DefaultBeanResultWriter<>("mediaCreative.csv",
 					new String[] { "id" });
-			mediaCreativeWriter.initWriter(handler.getOutputTablesPath(), MediaCreativeWrapper.class);
+			mediaCreativeWriter.initWriter(handler.getOutputTablesPath(),
+					MediaCreativeWrapper.class);
 		}
 		if (config.getEntityDatasets().contains(EntityDatasets.ACCOUNT.name())) {
 			this.accountWriter = new DefaultBeanResultWriter<>("accounts.csv", null);
@@ -395,6 +423,19 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
+		
+		if (config.getEntityDatasets().contains(EntityDatasets.SCHEDULED_TWEETS.name())) {
+			this.scheduledTweetsWriter = new DefaultBeanResultWriter<>("scheduledTweets.csv",
+					new String[] { "tweetId" });
+
+			this.scheduledTweetsWriter.initWriter(handler.getOutputTablesPath(),
+					ScheduledTweet.class);
+		}
+		if (config.getEntityDatasets().contains(EntityDatasets.PUBLISHED_TWEETS.name())) {
+			this.tweetsWriter = new DefaultBeanResultWriter<>("published_tweets.csv",
+					new String[] { "tweetId" });
+			this.tweetsWriter.initWriter(handler.getOutputTablesPath(), TweetWrapper.class);
+		}
 
 	}
 
