@@ -274,7 +274,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		List<String> failedJobs = new ArrayList<>();
 		for (JobDetails jd : finished) {
 			if ((jd != null) && (jd.getStatus() == TwitterAsyncQueryStatus.FAILED)) {
-				failedJobs.add(jd.getUrl());
+				failedJobs.add("ID:" + jd.getJobId() + "; URL:" + jd.getUrl());
 			}
 		}
 
