@@ -223,7 +223,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 				int cnt = 0;
 				for (AsyncAdsRequestChunk chunk : chunks) {
 					cnt++;
-					log.info("Submitting " + chunk.size() + " async data retrieval jobs..");
+					log.info("Submitting " + chunk.size() + " async data retrieval jobs.." + "Account ID: " + acc.getId());
 					Map<String, AdsStatsAsyncRequest> jdIds = apiService
 							.submitAdStatsAsyncRequests(chunk.getRequestList());
 					log.info("Waiting to proccess " + cnt + ". chunk of jobs..");
