@@ -164,18 +164,18 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					mediaCreativeWriter.writeAllResults(
 							MediaCreativeWrapper.Builder.build(mediaCreatives, accountId));
 				}
-
-				if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
-					List<TwitterVideoAppDownloadCard> videoCards = apiService
-							.getVideoAppDownloadCards(accountId, config.getIncludeDeleted());
-					appCardWriter.writeAllResults(
-							AppDownloadCardWrapper.Builder.build(videoCards, accountId));
-
-					List<TwitterImageAppDownloadCard> imageCards = apiService
-							.getImageoAppDownloadCards(accountId, config.getIncludeDeleted());
-					appCardWriter.writeAllResults(
-							AppDownloadCardWrapper.Builder.build(imageCards, accountId));
-				}
+// Since version 11, these endpoints have been officially deprecated https://twittercommunity.com/t/ads-api-version-11/168814#deprecated-legacy-website-and-app-card-endpoints-11
+//				if (config.getEntityDatasets().contains(EntityDatasets.APP_CARDS.name())) {
+//					List<TwitterVideoAppDownloadCard> videoCards = apiService
+//							.getVideoAppDownloadCards(accountId, config.getIncludeDeleted());
+//					appCardWriter.writeAllResults(
+//							AppDownloadCardWrapper.Builder.build(videoCards, accountId));
+//
+//					List<TwitterImageAppDownloadCard> imageCards = apiService
+//							.getImageoAppDownloadCards(accountId, config.getIncludeDeleted());
+//					appCardWriter.writeAllResults(
+//							AppDownloadCardWrapper.Builder.build(imageCards, accountId));
+//				}
 
 				if (config.getEntityDatasets().contains(EntityDatasets.SCHEDULED_TWEETS.name())) {
 					scheduledTweetsWriter.writeAllResults(
@@ -209,7 +209,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
 					break;
-					
+
 				case PROMOTED_TWEET:
 					reqEntityIds = getEntIds(
 							apiService.filterRecentlyUpdatedLineItems(lineItems, since));
@@ -423,7 +423,7 @@ public class TwitterAdsExRunner extends ComponentRunner {
 		this.promotedTweetsWriter = new DefaultBeanResultWriter<>("promotedTweets.csv",
 				new String[] { "tweetId" });
 		this.promotedTweetsWriter.initWriter(handler.getOutputTablesPath(), PromotedTweets.class);
-		
+
 		if (config.getEntityDatasets().contains(EntityDatasets.SCHEDULED_TWEETS.name())) {
 			this.scheduledTweetsWriter = new DefaultBeanResultWriter<>("scheduledTweets.csv",
 					new String[] { "tweetId" });
