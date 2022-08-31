@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc3cbe13-626b-4d98-9fac-bb52358bd6db" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/twitter4jads/TwitterAdsConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/twitter4jads/TwitterAdsConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/esnerda/keboola/ex/twitterads/TwitterAdsExRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/esnerda/keboola/ex/twitterads/TwitterAdsExRunner.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
