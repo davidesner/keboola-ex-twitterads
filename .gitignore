@@ -3,3 +3,5 @@
 /.project
 /src/main/java/Test.java
 .github
+.idea/
+.idea/workspace.xml
